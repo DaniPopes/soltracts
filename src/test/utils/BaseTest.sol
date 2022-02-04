@@ -6,7 +6,7 @@ import { DSTest } from "ds-test/test.sol";
 import { Utilities } from "../utils/Utilities.sol";
 import { Hevm } from "../utils/Hevm.sol";
 
-import { DSTestPlus } from "@solmate/src/test/utils/DSTestPlus.sol";
+import { DSTestPlus } from "@rari-capital/solmate/src/test/utils/DSTestPlus.sol";
 
 // solhint-disable no-empty-blocks
 
