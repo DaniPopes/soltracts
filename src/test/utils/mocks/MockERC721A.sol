@@ -3,7 +3,7 @@
 pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts/access/Ownable.sol";
-import "@solmate/src/utils/ReentrancyGuard.sol";
+import "@rari-capital/solmate/src/utils/ReentrancyGuard.sol";
 import "../../../tokens/ERC721/ERC721A.sol";
 
 // solhint-disable no-empty-blocks
