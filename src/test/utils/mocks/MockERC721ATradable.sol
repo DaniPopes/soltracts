@@ -4,8 +4,6 @@ pragma solidity ^0.8.0;
 
 import "../../../tokens/ERC721/extensions/ERC721ATradable.sol";
 
-// solhint-disable no-empty-blocks
-
 contract MockERC721ATradable is ERC721ATradable {
 	constructor(
 		string memory _name,

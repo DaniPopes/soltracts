@@ -6,8 +6,6 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 import "@rari-capital/solmate/src/utils/ReentrancyGuard.sol";
 import "../../../tokens/ERC721/ERC721A.sol";
 
-// solhint-disable no-empty-blocks
-
 contract MockERC721A is ERC721A, Ownable, ReentrancyGuard {
 	constructor(
 		string memory _name,
