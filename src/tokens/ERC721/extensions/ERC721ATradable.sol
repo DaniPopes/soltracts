@@ -11,7 +11,7 @@ interface IProxyRegistry {
 }
 
 /// @author @DaniPopes
-/// @notice ERC721A extension, inspired by @ProjectOpenSea's opensea-creatures (ERC721Tradable).
+/// @notice Tradable extension for ERC721A, inspired by @ProjectOpenSea's opensea-creatures (ERC721Tradable).
 /// Whitelists all OpenSea proxy addresses and the LooksRare transfer manager address
 /// in {isApprovedForAll} and saves up to 50,000 gas for each account by removing the need
 /// to {setApprovalForAll} before being able to trade on the marketplaces.
