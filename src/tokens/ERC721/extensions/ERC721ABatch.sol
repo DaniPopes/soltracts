@@ -7,6 +7,10 @@ import { ERC721A } from "../ERC721A.sol";
 /// @author @DaniPopes
 /// @notice Batch transfer extension for ERC721A.
 abstract contract ERC721ABatch is ERC721A {
+	/* -------------------------------------------------------------------------- */
+	/*                             ERC721ABatch LOGIC                             */
+	/* -------------------------------------------------------------------------- */
+
 	/// @notice Transfers `id` tokens from `from` to one `to` address.
 	/// WARNING: Usage of this method is discouraged, use {batchSafeTransferFrom} whenever possible.
 	/// @dev See {ERC721A.transferFrom}.

@@ -6,19 +6,22 @@ import { console } from "./utils/Console.sol";
 import { BaseTest } from "./utils/BaseTest.sol";
 import { MockProxyRegistry } from "./utils/mocks/MockProxyRegistry.sol";
 import { MockERC721ATradable } from "./utils/mocks/MockERC721ATradable.sol";
+import { MockTransferManagerERC721 } from "./utils/mocks/MockTransferManagerERC721.sol";
 
 contract TestERC721ATradable is BaseTest {
-	MockProxyRegistry private proxyRegistry;
 	MockERC721ATradable private erc721aTradable;
+	MockProxyRegistry private proxyRegistry;
+	MockTransferManagerERC721 private transferManagerERC721;
 
 	function setUp() public {
 		proxyRegistry = new MockProxyRegistry();
-		erc721aTradable = new MockERC721ATradable("testname", "testsymbol", address(proxyRegistry));
+		transferManagerERC721 = new MockTransferManagerERC721();
+		erc721aTradable = new MockERC721ATradable("testname", "testsymbol", address(proxyRegistry), address(transferManagerERC721));
 	}
 
 	function testDeployGas() public {
 		unchecked {
-			new MockERC721ATradable("abcdefg", "xyz", getRandomAddress(0x69));
+			new MockERC721ATradable("abcdefg", "xyz", getRandomAddress(0x69), getRandomAddress(0x420));
 		}
 	}
 
@@ -31,5 +34,17 @@ contract TestERC721ATradable is BaseTest {
 		address proxy = proxyRegistry.registerProxy(from);
 
 		assertTrue(erc721aTradable.isApprovedForAll(from, proxy));
+		assertTrue(erc721aTradable.isApprovedForAll(from, address(transferManagerERC721)));
+
+		erc721aTradable.setMarketplaceApprovalForAll(false);
+
+		assertFalse(erc721aTradable.isApprovedForAll(from, proxy));
+		assertFalse(erc721aTradable.isApprovedForAll(from, address(transferManagerERC721)));
+
+		erc721aTradable.setApprovalForAll(proxy, true);
+		erc721aTradable.setApprovalForAll(address(transferManagerERC721), true);
+
+		assertTrue(erc721aTradable.isApprovedForAll(from, proxy));
+		assertTrue(erc721aTradable.isApprovedForAll(from, address(transferManagerERC721)));
 	}
 }
