@@ -60,7 +60,7 @@ abstract contract ERC721ATradable is ERC721A {
 	/*                            ERC721ATradable LOGIC                           */
 	/* -------------------------------------------------------------------------- */
 
-	/// @notice Toggles the marketplace whitelist status.
+	/// @notice Enables or disables the marketplace whitelist in {isApprovedForAll}.
 	/// @dev Must be implemented in inheriting contracts.
 	/// Recommended to use in combination with an access control contract (e.g. OpenZeppelin's Ownable).
 	function setMarketplaceApprovalForAll(bool approved) public virtual;
