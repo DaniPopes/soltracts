@@ -44,11 +44,11 @@ abstract contract ERC721ATradable is ERC721A {
 	/// - `_openSeaProxyRegistry` must not be the 0 address.
 	/// - `_looksRareTransferManager` must not be the 0 address.
 	/// OpenSea proxy registry addresses:
-	/// ETHEREUM MAINNET: 0xa5409ec958C83C3f309868babACA7c86DCB077c1
-	/// ETHEREUM RINKEBY: 0xF57B2c51dED3A29e6891aba85459d600256Cf317
+	/// - ETHEREUM MAINNET: 0xa5409ec958C83C3f309868babACA7c86DCB077c1
+	/// - ETHEREUM RINKEBY: 0xF57B2c51dED3A29e6891aba85459d600256Cf317
 	/// LooksRare Transfer Manager addresses (https://docs.looksrare.org/developers/deployed-contract-addresses):
-	/// ETHEREUM MAINNET: 0xf42aa99F011A1fA7CDA90E5E98b277E306BcA83e
-	/// ETHEREUM RINKEBY: 0x3f65A762F15D01809cDC6B43d8849fF24949c86a
+	/// - ETHEREUM MAINNET: 0xf42aa99F011A1fA7CDA90E5E98b277E306BcA83e
+	/// - ETHEREUM RINKEBY: 0x3f65A762F15D01809cDC6B43d8849fF24949c86a
 	/// @param _openSeaProxyRegistry The OpenSea proxy registry address.
 	constructor(address _openSeaProxyRegistry, address _looksRareTransferManager) {
 		require(_openSeaProxyRegistry != address(0) && _looksRareTransferManager != address(0), "INVALID_ADDRESS");
