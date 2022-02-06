@@ -28,6 +28,7 @@
         "no-inline-assembly": "off",
         "avoid-tx-origin": "off",
         "var-name-mixedcase": "off",
+        "no-empty-blocks": "off",
         "prettier/prettier": [
             "error",
             {
