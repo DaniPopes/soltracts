@@ -16,6 +16,9 @@ trace		:; make build -s && forge test -vvv --root .
 tests		:; make build && forge test -vvvvv --root .
 snapshot	:; make build -s && forge snapshot --root .
 
+# Git
+lint-commit	:; make lint && make snapshot && git commit -a -m "prettier, .gas-snapshot, out/"
+
 # Transactions
 # Any env var can be set in .env or in the command (e.g. VALUE="123" cast call ...)
 # Use $ETH_FROM, $KEYSTORE_PASSWORD, $KEYSTORE_PATH for own keystore

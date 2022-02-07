@@ -1,5 +1,5 @@
 TestERC721A:testDeployGas() (gas: 2108728)
-TestERC721A:testSafeMint(uint256) (runs: 256, μ: 178462, ~: 183917)
+TestERC721A:testSafeMint(uint256) (runs: 256, μ: 174765, ~: 176029)
 TestERC721A:testSafeMintGas1() (gas: 50479)
 TestERC721A:testSafeMintGas2() (gas: 52473)
 TestERC721A:testSafeMintGas3() (gas: 54470)
