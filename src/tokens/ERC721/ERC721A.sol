@@ -197,7 +197,7 @@ abstract contract ERC721A is ERC721 {
 
 		require(prevOwnership.owner == from, "WRONG_FROM");
 		require(to != address(0), "INVALID_RECIPIENT");
-		require(msg.sender == from || getApproved(id) == msg.sender || isApprovedForAll(from, msg.sender), "NOT_AUTHORIZED");
+		require(msg.sender == prevOwnership.owner || getApproved(id) == msg.sender || isApprovedForAll(prevOwnership.owner, msg.sender), "NOT_AUTHORIZED");
 
 		// Clear approvals
 		delete _tokenApprovals[id];
@@ -220,6 +220,7 @@ abstract contract ERC721A is ERC721 {
 				}
 			}
 		}
+
 		emit Transfer(from, to, id);
 	}
 
