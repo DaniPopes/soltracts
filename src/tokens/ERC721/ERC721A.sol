@@ -54,8 +54,7 @@ abstract contract ERC721A is ERC721 {
 	/*                              ENUMERABLE LOGIC                              */
 	/* -------------------------------------------------------------------------- */
 
-	/// @notice Returns the total amount of tokens stored by the contract.
-	/// @return The token supply.
+	/// @inheritdoc ERC721
 	function totalSupply() public view virtual override returns (uint256) {
 		// currentIndex is initialized to 1 so it cannot underflow.
 		unchecked {
@@ -63,13 +62,10 @@ abstract contract ERC721A is ERC721 {
 		}
 	}
 
-	/// @notice Returns a token ID owned by `owner` at a given `index` of its token list.
 	/// @dev Use along with {balanceOf} to enumerate all of `owner`'s tokens.
 	/// This read function is O({totalSupply}). If calling from a separate contract, be sure to test gas first.
 	/// It may also degrade with extremely large collection sizes (e.g >> 10000), test for your use case.
-	/// @param owner The address to query.
-	/// @param index The index to query.
-	/// @return The token ID.
+	/// @inheritdoc ERC721
 	function tokenOfOwnerByIndex(address owner, uint256 index) public view virtual override returns (uint256) {
 		require(index < balanceOf(owner), "INVALID_INDEX");
 
@@ -96,10 +92,7 @@ abstract contract ERC721A is ERC721 {
 		revert("NOT_FOUND");
 	}
 
-	/// @notice Returns a token ID at a given `index` of all the tokens stored by the contract.
-	/// @dev Use along with {totalSupply} to enumerate all tokens.
-	/// @param index The index to query.
-	/// @return The token ID.
+	/// @inheritdoc ERC721
 	function tokenByIndex(uint256 index) public view virtual override returns (uint256) {
 		require(_exists(index), "INVALID_INDEX");
 		return index;
@@ -109,18 +102,13 @@ abstract contract ERC721A is ERC721 {
 	/*                                ERC721 LOGIC                                */
 	/* -------------------------------------------------------------------------- */
 
-	/// @notice Returns the number of tokens in an account.
-	/// @param owner The address to query.
-	/// @return The balance.
+	/// @inheritdoc ERC721
 	function balanceOf(address owner) public view virtual override returns (uint256) {
 		require(owner != address(0), "INVALID_OWNER");
 		return uint256(_addressData[owner].balance);
 	}
 
-	/// @notice Returns the owner of a token ID.
-	/// @dev Requirements:
-	/// - `id` must exist.
-	/// @param id The token ID.
+	/// @inheritdoc ERC721
 	function ownerOf(uint256 id) public view virtual override returns (address) {
 		return _ownershipOf(id).owner;
 	}
@@ -129,65 +117,36 @@ abstract contract ERC721A is ERC721 {
 	/*                           INTERNAL GENERAL LOGIC                           */
 	/* -------------------------------------------------------------------------- */
 
-	/// @dev Returns whether a token ID exists.
-	/// Tokens can be managed by their owner or approved accounts via {approve} or {setApprovalForAll}.
-	/// Tokens start existing when they are minted.
-	/// @param id Token ID to query.
+	/// @inheritdoc ERC721
+	function _mint(address to, uint256 amount) internal virtual override {
+		require(to != address(0), "INVALID_RECIPIENT");
+		require(amount != 0, "INVALID_AMOUNT");
+
+		// Counter or mint amount overflow is incredibly unrealistic.
+		unchecked {
+			uint256 startId = currentIndex;
+
+			_addressData[to].balance += uint128(amount);
+			_addressData[to].numberMinted += uint128(amount);
+
+			_ownerships[startId].owner = to;
+			_ownerships[startId].timestamp = uint64(block.timestamp);
+
+			for (uint256 i; i < amount; i++) {
+				emit Transfer(address(0), to, startId);
+				startId++;
+			}
+
+			currentIndex = startId;
+		}
+	}
+
+	/// @inheritdoc ERC721
 	function _exists(uint256 id) internal view virtual override returns (bool) {
 		return id != 0 && id < currentIndex;
 	}
 
-	/// @notice Returns all token IDs owned by an address.
-	/// This read function is O({totalSupply}). If calling from a separate contract, be sure to test gas first.
-	/// It may also degrade with extremely large collection sizes (e.g >> 10000), test for your use case.
-	/// @param owner Address to query.
-	/// @return ids An array of the ID's owned by `owner`.
-	function _idsOfOwner(address owner) internal view virtual returns (uint256[] memory ids) {
-		uint256 bal = uint256(_addressData[owner].balance);
-		if (bal == 0) return ids;
-
-		ids = new uint256[](bal);
-
-		uint256 minted = currentIndex;
-		address currOwner;
-		uint256 index;
-
-		unchecked {
-			for (uint256 i = 1; i < minted; i++) {
-				address _owner = _ownerships[i].owner;
-
-				if (_owner != address(0)) {
-					currOwner = _owner;
-				}
-
-				if (currOwner == owner) {
-					ids[index++] = i;
-					if (index == bal) return ids;
-				}
-			}
-		}
-	}
-
-	function _numberMinted(address owner) public view virtual returns (uint256) {
-		require(owner != address(0), "INVALID_OWNER");
-		return uint256(_addressData[owner].numberMinted);
-	}
-
-	function _ownershipOf(uint256 id) internal view virtual returns (TokenOwnership memory) {
-		require(_exists(id), "NONEXISTENT_TOKEN");
-
-		unchecked {
-			for (uint256 curr = id; curr >= 0; curr--) {
-				TokenOwnership memory ownership = _ownerships[curr];
-				if (ownership.owner != address(0)) {
-					return ownership;
-				}
-			}
-		}
-
-		revert("NOT_FOUND");
-	}
-
+	/// @inheritdoc ERC721
 	function _transfer(
 		address from,
 		address to,
@@ -224,33 +183,60 @@ abstract contract ERC721A is ERC721 {
 		emit Transfer(from, to, id);
 	}
 
-	/// @dev Mints `amount` tokens to `to`.
-	/// Requirements:
-	/// - there must be `amount` tokens remaining unminted in the total collection.
-	/// - `to` cannot be the zero address.
-	/// Emits `amount` {Transfer} events.
-	/// @param to The address to mint to.
-	/// @param amount The amount of tokens to mint.
-	function _mint(address to, uint256 amount) internal virtual override {
-		require(to != address(0), "INVALID_RECIPIENT");
-		require(amount != 0, "INVALID_AMOUNT");
+	/// @notice Returns all token IDs owned by an address.
+	/// This read function is O({totalSupply}). If calling from a separate contract, be sure to test gas first.
+	/// It may also degrade with extremely large collection sizes (e.g >> 10000), test for your use case.
+	/// @param owner Address to query.
+	/// @return ids An array of the ID's owned by `owner`.
+	function _idsOfOwner(address owner) internal view virtual returns (uint256[] memory ids) {
+		uint256 bal = uint256(_addressData[owner].balance);
+		if (bal == 0) return ids;
 
-		// Counter or mint amount overflow is incredibly unrealistic.
+		ids = new uint256[](bal);
+
+		uint256 minted = currentIndex;
+		address currOwner;
+		uint256 index;
+
 		unchecked {
-			uint256 startId = currentIndex;
+			for (uint256 i = 1; i < minted; i++) {
+				address _owner = _ownerships[i].owner;
 
-			_addressData[to].balance += uint128(amount);
-			_addressData[to].numberMinted += uint128(amount);
+				if (_owner != address(0)) {
+					currOwner = _owner;
+				}
 
-			_ownerships[startId].owner = to;
-			_ownerships[startId].timestamp = uint64(block.timestamp);
-
-			for (uint256 i; i < amount; i++) {
-				emit Transfer(address(0), to, startId);
-				startId++;
+				if (currOwner == owner) {
+					ids[index++] = i;
+					if (index == bal) return ids;
+				}
 			}
-
-			currentIndex = startId;
 		}
+	}
+
+	/// @dev Returns the total number of tokens minted by and address.
+	/// @param owner Address to query.
+	/// @return Number of tokens minted by `owner`.
+	function _numberMinted(address owner) public view virtual returns (uint256) {
+		require(owner != address(0), "INVALID_OWNER");
+		return uint256(_addressData[owner].numberMinted);
+	}
+
+	/// @dev Returns the ownership values for a token ID.
+	/// @param id Token ID to query.
+	/// @return {TokenOwnership} of `id`.
+	function _ownershipOf(uint256 id) internal view virtual returns (TokenOwnership memory) {
+		require(_exists(id), "NONEXISTENT_TOKEN");
+
+		unchecked {
+			for (uint256 curr = id; curr >= 0; curr--) {
+				TokenOwnership memory ownership = _ownerships[curr];
+				if (ownership.owner != address(0)) {
+					return ownership;
+				}
+			}
+		}
+
+		revert("NOT_FOUND");
 	}
 }

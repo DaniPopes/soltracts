@@ -2,6 +2,18 @@
 
 A set of modern and efficient solidity smart contracts.
 
+Currently there are only ERC721 NFT contracts.
+
+## Tokens
+
+### ERC721
+- **ERC721**: Used at the base of the other ERC721 contracts which implement mint, storage and transfer logic. Includes only metadata and abstract logic.
+- **ERC721A**: Extends `ERC721`. Refactored and optimized version of [chiru-labs's implementation](https://github.com/chiru-labs/ERC721A).
+- **ERC721B**: Extends `ERC721`. Refactored and optimized version of [beskay's implementation](https://github.com/beskay/ERC721B).
+- **Extensions**:
+  * **ERC721Batch**: Extends `ERC721` with batch transfer functions.
+  * **ERC721Tradable**: Extends `ERC721` with NFT marketplace whitelisting for easy trading.
+
 ## Installation
 
 To install with [**Foundry**](https://github.com/gakonst/foundry):
@@ -18,7 +30,7 @@ dapp install danipopes/soltracts
 
 ## Test
 
-Tests use [Foundry: Forge](https://github.com/gakonst/foundry).
+Tests use [**Foundry: Forge**](https://github.com/gakonst/foundry).
 
 ### Install Forge
 
