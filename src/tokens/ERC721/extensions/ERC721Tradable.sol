@@ -2,7 +2,7 @@
 
 pragma solidity ^0.8.0;
 
-import { ERC721A } from "../ERC721A.sol";
+import { ERC721 } from "../ERC721.sol";
 
 /// @author DaniPopes (https://github.com/danipopes/soltracts/)
 /// @notice OpenSea proxy registry interface.
@@ -11,13 +11,13 @@ interface IProxyRegistry {
 }
 
 /// @author DaniPopes (https://github.com/danipopes/soltracts/)
-/// @notice Tradable extension for ERC721A, inspired by @ProjectOpenSea's opensea-creatures (ERC721Tradable).
+/// @notice Tradable extension for ERC721, inspired by @ProjectOpenSea's opensea-creatures (ERC721Tradable).
 /// Whitelists all OpenSea proxy addresses and the LooksRare transfer manager address
 /// in {isApprovedForAll} and saves up to 50,000 gas for each account by removing the need
 /// to {setApprovalForAll} before being able to trade on the marketplaces.
 /// @dev Mitigating this issue: https://github.com/chiru-labs/ERC721A/issues/40#issuecomment-1024861728
 /// by providing a function ({setMarketplaceApprovalForAll}) to revoke these approvals.
-abstract contract ERC721ATradable is ERC721A {
+abstract contract ERC721Tradable is ERC721 {
 	/* -------------------------------------------------------------------------- */
 	/*                              IMMUTABLE STORAGE                             */
 	/* -------------------------------------------------------------------------- */
@@ -66,7 +66,7 @@ abstract contract ERC721ATradable is ERC721A {
 	function setMarketplaceApprovalForAll(bool approved) public virtual;
 
 	/// @return True if `operator` is a whitelisted marketplace contract or if it was approved by `owner` with {ERC721A.setApprovalForAll}.
-	/// @inheritdoc ERC721A
+	/// @inheritdoc ERC721
 	function isApprovedForAll(address owner, address operator) public view virtual override returns (bool) {
 		if (marketPlaceApprovalForAll && (operator == IProxyRegistry(openSeaProxyRegistry).proxies(owner) || operator == looksRareTransferManager)) return true;
 		return super.isApprovedForAll(owner, operator);

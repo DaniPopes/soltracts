@@ -2,18 +2,18 @@
 
 pragma solidity ^0.8.0;
 
-import { ERC721A } from "../ERC721A.sol";
+import { ERC721 } from "../ERC721.sol";
 
 /// @author DaniPopes (https://github.com/danipopes/soltracts/)
-/// @notice Batch transfer extension for ERC721A.
-abstract contract ERC721ABatch is ERC721A {
+/// @notice Batch transfer extension for ERC721.
+abstract contract ERC721Batch is ERC721 {
 	/* -------------------------------------------------------------------------- */
-	/*                             ERC721ABatch LOGIC                             */
+	/*                              ERC721Batch LOGIC                             */
 	/* -------------------------------------------------------------------------- */
 
 	/// @notice Transfers `id` tokens from `from` to one `to` address.
 	/// WARNING: Usage of this method is discouraged, use {batchSafeTransferFrom} whenever possible.
-	/// @dev See {ERC721A.transferFrom}.
+	/// @dev See {ERC721.transferFrom}.
 	/// @param from The address to transfer from.
 	/// @param to The address to transfer to.
 	/// @param ids The token IDs to transfer.
@@ -32,7 +32,7 @@ abstract contract ERC721ABatch is ERC721A {
 
 	/// @notice Transfers `id` tokens from `from` to many `to` addresses.
 	/// WARNING: Usage of this method is discouraged, use {batchSafeTransferFrom} whenever possible.
-	/// @dev See {ERC721A.transferFrom}.
+	/// @dev See {ERC721.transferFrom}.
 	/// @param from The address to transfer from.
 	/// @param to The addresses to transfer to.
 	/// @param ids The token IDs to transfer.
@@ -50,7 +50,7 @@ abstract contract ERC721ABatch is ERC721A {
 	}
 
 	/// @notice Safely transfers `id` tokens from `from` to one `to` address.
-	/// @dev See {ERC721A.safeTransferFrom}.
+	/// @dev See {ERC721.safeTransferFrom}.
 	/// @param from The address to transfer from.
 	/// @param to The address to transfer to.
 	/// @param ids The token IDs to transfer.
@@ -69,7 +69,7 @@ abstract contract ERC721ABatch is ERC721A {
 	}
 
 	/// @notice Safely transfers `id` tokens from `from` to many `to` addresses.
-	/// @dev See {ERC721A.safeTransferFrom}.
+	/// @dev See {ERC721.safeTransferFrom}.
 	/// @param from The address to transfer from.
 	/// @param to The addresses to transfer to.
 	/// @param ids The token IDs to transfer.

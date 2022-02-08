@@ -5,23 +5,23 @@ pragma solidity ^0.8.0;
 import { console } from "./utils/Console.sol";
 import { BaseTest } from "./utils/BaseTest.sol";
 import { MockProxyRegistry } from "./utils/mocks/MockProxyRegistry.sol";
-import { MockERC721ATradable } from "./utils/mocks/MockERC721ATradable.sol";
+import { MockERC721Tradable } from "./utils/mocks/MockERC721Tradable.sol";
 import { MockTransferManagerERC721 } from "./utils/mocks/MockTransferManagerERC721.sol";
 
 contract TestERC721ATradable is BaseTest {
-	MockERC721ATradable private erc721aTradable;
+	MockERC721Tradable private erc721aTradable;
 	MockProxyRegistry private proxyRegistry;
 	MockTransferManagerERC721 private transferManagerERC721;
 
 	function setUp() public {
 		proxyRegistry = new MockProxyRegistry();
 		transferManagerERC721 = new MockTransferManagerERC721();
-		erc721aTradable = new MockERC721ATradable("testname", "testsymbol", address(proxyRegistry), address(transferManagerERC721));
+		erc721aTradable = new MockERC721Tradable("testname", "testsymbol", address(proxyRegistry), address(transferManagerERC721));
 	}
 
 	function testDeployGas() public {
 		unchecked {
-			new MockERC721ATradable("abcdefg", "xyz", getRandomAddress(0x69), getRandomAddress(0x420));
+			new MockERC721Tradable("abcdefg", "xyz", getRandomAddress(0x69), getRandomAddress(0x420));
 		}
 	}
 

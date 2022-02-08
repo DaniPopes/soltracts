@@ -4,18 +4,18 @@ pragma solidity ^0.8.0;
 
 import { console } from "./utils/Console.sol";
 import { BaseTest } from "./utils/BaseTest.sol";
-import { MockERC721ABatch } from "./utils/mocks/MockERC721ABatch.sol";
+import { MockERC721Batch } from "./utils/mocks/MockERC721Batch.sol";
 
 contract TestERC721ABatch is BaseTest {
-	MockERC721ABatch private erc721aBatch;
+	MockERC721Batch private erc721aBatch;
 
 	function setUp() public {
-		erc721aBatch = new MockERC721ABatch("testname", "testsymbol");
+		erc721aBatch = new MockERC721Batch("testname", "testsymbol");
 	}
 
 	function testDeployGas() public {
 		unchecked {
-			new MockERC721ABatch("abcdefg", "xyz");
+			new MockERC721Batch("abcdefg", "xyz");
 		}
 	}
 

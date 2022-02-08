@@ -52,3 +52,4 @@ These contracts were inspired by or directly modified from many sources, primari
 - [Chiru-Labs](https://github.com/chiru-labs/ERC721A)
 - [Rari-Capital](https://github.com/Rari-Capital/solmate)
 - [OpenZeppelin](https://github.com/OpenZeppelin/openzeppelin-contracts)
+- [Beskay](https://github.com/beskay/ERC721B)
