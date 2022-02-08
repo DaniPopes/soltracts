@@ -71,14 +71,14 @@ contract TestERC721B is BaseTest {
 		erc721b.safeMint(from, 2);
 
 		startMeasuringGas("First transfer");
-		erc721b.transferFrom(from, to, 0);
+		erc721b.transferFrom(from, to, 1);
 		stopMeasuringGas();
 
 		assertEq(erc721b.balanceOf(from), 1);
 		assertEq(erc721b.balanceOf(to), 1);
 
 		startMeasuringGas("Second transfer");
-		erc721b.transferFrom(from, to, 1);
+		erc721b.transferFrom(from, to, 2);
 		stopMeasuringGas();
 
 		assertEq(erc721b.balanceOf(from), 0);
@@ -93,14 +93,14 @@ contract TestERC721B is BaseTest {
 		erc721b.safeMint(from, 2);
 
 		startMeasuringGas("First transfer");
-		erc721b.safeTransferFrom(from, to, 0);
+		erc721b.safeTransferFrom(from, to, 1);
 		stopMeasuringGas();
 
 		assertEq(erc721b.balanceOf(from), 1);
 		assertEq(erc721b.balanceOf(to), 1);
 
 		startMeasuringGas("Second transfer");
-		erc721b.safeTransferFrom(from, to, 1);
+		erc721b.safeTransferFrom(from, to, 2);
 		stopMeasuringGas();
 	}
 }

@@ -23,7 +23,9 @@ abstract contract ERC721B is ERC721 {
 	/*                                 CONSTRUCTOR                                */
 	/* -------------------------------------------------------------------------- */
 
-	constructor(string memory name_, string memory symbol_) ERC721(name_, symbol_) {}
+	constructor(string memory name_, string memory symbol_) ERC721(name_, symbol_) {
+		_owners.push();
+	}
 
 	/* -------------------------------------------------------------------------- */
 	/*                              ENUMERABLE LOGIC                              */
@@ -31,7 +33,10 @@ abstract contract ERC721B is ERC721 {
 
 	/// @inheritdoc ERC721
 	function totalSupply() public view override returns (uint256) {
-		return _owners.length;
+		// Owner index is initialized to 1 so it cannot underflow.
+		unchecked {
+			return _owners.length - 1;
+		}
 	}
 
 	/// @dev Use along with {balanceOf} to enumerate all of `owner`"s tokens.
@@ -54,7 +59,7 @@ abstract contract ERC721B is ERC721 {
 
 	/// @inheritdoc ERC721
 	function tokenByIndex(uint256 index) public view virtual override returns (uint256) {
-		require(index < _owners.length, "INVALID_INDEX");
+		require(_exists(index), "INVALID_INDEX");
 		return index;
 	}
 
@@ -71,7 +76,7 @@ abstract contract ERC721B is ERC721 {
 
 		uint256 count;
 		uint256 length = _owners.length;
-		for (uint256 i; i < length; i++) {
+		for (uint256 i = 1; i < length; i++) {
 			if (owner == ownerOf(i)) {
 				unchecked {
 					count++;
@@ -86,8 +91,9 @@ abstract contract ERC721B is ERC721 {
 		require(_exists(id), "NONEXISTENT_TOKEN");
 
 		for (uint256 i = id; ; i++) {
-			if (_owners[i] != address(0)) {
-				return _owners[i];
+			address _owner = _owners[i];
+			if (_owner != address(0)) {
+				return _owner;
 			}
 		}
 
@@ -120,7 +126,7 @@ abstract contract ERC721B is ERC721 {
 
 	/// @inheritdoc ERC721
 	function _exists(uint256 id) internal view virtual override returns (bool) {
-		return id < _owners.length;
+		return id != 0 && id < _owners.length;
 	}
 
 	/// @inheritdoc ERC721
@@ -140,13 +146,10 @@ abstract contract ERC721B is ERC721 {
 		_owners[id] = to;
 
 		// if token ID below transferred one isn't set, set it to previous owner
-		// if tokenid is zero, skip this to prevent underflow
-		if (id != 0) {
-			unchecked {
-				uint256 prevId = id - 1;
-				if (_owners[prevId] == address(0)) {
-					_owners[prevId] = from;
-				}
+		unchecked {
+			uint256 prevId = id - 1;
+			if (_owners[prevId] == address(0)) {
+				_owners[prevId] = from;
 			}
 		}
 
