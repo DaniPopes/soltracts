@@ -29,18 +29,14 @@ abstract contract ERC721B is ERC721 {
 	/*                              ENUMERABLE LOGIC                              */
 	/* -------------------------------------------------------------------------- */
 
-	/// @notice Returns the total amount of tokens stored by the contract.
-	/// @return The token supply.
+	/// @inheritdoc ERC721
 	function totalSupply() public view override returns (uint256) {
 		return _owners.length;
 	}
 
-	/// @notice Returns a token ID owned by `owner` at a given `index` of its token list.
 	/// @dev Use along with {balanceOf} to enumerate all of `owner`"s tokens.
 	/// Dont call this function on chain from another smart contract, since it can become quite expensive
-	/// @param owner The address to query.
-	/// @param index The index to query.
-	/// @return The token ID.
+	/// @inheritdoc ERC721
 	function tokenOfOwnerByIndex(address owner, uint256 index) public view virtual override returns (uint256) {
 		require(index < balanceOf(owner), "INVALID_INDEX");
 
@@ -56,10 +52,7 @@ abstract contract ERC721B is ERC721 {
 		revert("NOT_FOUND");
 	}
 
-	/// @notice Returns a token ID at a given `index` of all the tokens stored by the contract.
-	/// @dev Use along with {totalSupply} to enumerate all tokens.
-	/// @param index The index to query.
-	/// @return The token ID.
+	/// @inheritdoc ERC721
 	function tokenByIndex(uint256 index) public view virtual override returns (uint256) {
 		require(index < _owners.length, "INVALID_INDEX");
 		return index;
@@ -69,12 +62,10 @@ abstract contract ERC721B is ERC721 {
 	/*                                ERC721 LOGIC                                */
 	/* -------------------------------------------------------------------------- */
 
-	/// @notice Returns the number of tokens in an account.
-	/// @param owner The address to query.
 	/// @dev Iterates through _owners array.
 	/// It is not recommended to call this function from another smart contract
 	/// as it can become quite expensive -- call this function off chain instead.
-	/// @return The balance.
+	/// @inheritdoc ERC721
 	function balanceOf(address owner) public view virtual override returns (uint256) {
 		require(owner != address(0), "INVALID_OWNER");
 
@@ -90,10 +81,7 @@ abstract contract ERC721B is ERC721 {
 		return count;
 	}
 
-	/// @notice Returns the owner of a token ID.
-	/// @dev Requirements:
-	/// - `id` must exist.
-	/// @param id The token ID.
+	/// @inheritdoc ERC721
 	function ownerOf(uint256 id) public view virtual override returns (address) {
 		require(_exists(id), "NONEXISTENT_TOKEN");
 
@@ -110,6 +98,7 @@ abstract contract ERC721B is ERC721 {
 	/*                               INTERNAL LOGIC                               */
 	/* -------------------------------------------------------------------------- */
 
+	/// @inheritdoc ERC721
 	function _mint(address to, uint256 amount) internal virtual override {
 		require(to != address(0), "INVALID_RECIPIENT");
 		require(amount != 0, "INVALID_AMOUNT");
@@ -129,10 +118,12 @@ abstract contract ERC721B is ERC721 {
 		}
 	}
 
+	/// @inheritdoc ERC721
 	function _exists(uint256 id) internal view virtual override returns (bool) {
 		return id < _owners.length;
 	}
 
+	/// @inheritdoc ERC721
 	function _transfer(
 		address from,
 		address to,
