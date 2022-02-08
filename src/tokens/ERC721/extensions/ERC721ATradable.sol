@@ -4,13 +4,13 @@ pragma solidity ^0.8.0;
 
 import { ERC721A } from "../ERC721A.sol";
 
-/// @author @DaniPopes
+/// @author DaniPopes (https://github.com/danipopes/soltracts/)
 /// @notice OpenSea proxy registry interface.
 interface IProxyRegistry {
 	function proxies(address) external view returns (address);
 }
 
-/// @author @DaniPopes
+/// @author DaniPopes (https://github.com/danipopes/soltracts/)
 /// @notice Tradable extension for ERC721A, inspired by @ProjectOpenSea's opensea-creatures (ERC721Tradable).
 /// Whitelists all OpenSea proxy addresses and the LooksRare transfer manager address
 /// in {isApprovedForAll} and saves up to 50,000 gas for each account by removing the need

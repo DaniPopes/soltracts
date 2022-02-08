@@ -4,7 +4,7 @@ pragma solidity ^0.8.0;
 
 import { ERC721A } from "../ERC721A.sol";
 
-/// @author @DaniPopes
+/// @author DaniPopes (https://github.com/danipopes/soltracts/)
 /// @notice Batch transfer extension for ERC721A.
 abstract contract ERC721ABatch is ERC721A {
 	/* -------------------------------------------------------------------------- */

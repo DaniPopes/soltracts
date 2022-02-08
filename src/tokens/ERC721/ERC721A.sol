@@ -2,7 +2,7 @@
 
 pragma solidity ^0.8.0;
 
-/// @author @DaniPopes
+/// @author DaniPopes (https://github.com/danipopes/soltracts/)
 /// @notice Implementation of the [ERC721](https://eips.ethereum.org/EIPS/eip-721) Non-Fungible Token Standard,
 /// including the Metadata and Enumerable extension. Built to optimize for lowest gas possible during mints.
 /// @dev Mix of ERC721 implementations by openzeppelin/openzeppelin-contracts, rari-capital/solmate
