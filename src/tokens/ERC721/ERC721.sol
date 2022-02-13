@@ -124,7 +124,7 @@ abstract contract ERC721 {
 	/// - `id` must exist.
 	/// @param id Token ID to query.
 	/// @return The account approved for `id` token.
-	function getApproved(uint256 id) public virtual returns (address) {
+	function getApproved(uint256 id) public view virtual returns (address) {
 		require(_exists(id), "NONEXISTENT_TOKEN");
 		return _tokenApprovals[id];
 	}
