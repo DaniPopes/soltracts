@@ -17,7 +17,7 @@ tests		:; make build && forge test -vvvvv --root .
 snapshot	:; make build -s && forge snapshot --root .
 
 # Git
-lint-commit	:; make lint && make snapshot && git commit -a -m "prettier, .gas-snapshot, out/"
+lint-commit	:; make lint && make snapshot && git commit -a -m "prettier, .gas-snapshot"
 
 # Transactions
 # Any env var can be set in .env or in the command (e.g. VALUE="123" cast call ...)
