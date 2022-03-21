@@ -274,40 +274,66 @@ contract TestERC721A is BaseTest {
         }
     }
 
-    function testGas_safeMint1() public {
-        unchecked {
-            erc721a.mint(alice, 1);
-        }
+    function testGas_mint() public {
+        // start slots warm
+        startMeasuringGas("First mint");
+        erc721a.mint(address(69), 1);
+        stopMeasuringGas();
+
+        startMeasuringGas("Mint 1");
+        erc721a.mint(address(1), 1);
+        stopMeasuringGas();
+
+        startMeasuringGas("Mint 2");
+        erc721a.mint(address(2), 2);
+        stopMeasuringGas();
+
+        startMeasuringGas("Mint 3");
+        erc721a.mint(address(3), 3);
+        stopMeasuringGas();
+
+        startMeasuringGas("Mint 4");
+        erc721a.mint(address(4), 4);
+        stopMeasuringGas();
+
+        startMeasuringGas("Mint 5");
+        erc721a.mint(address(5), 5);
+        stopMeasuringGas();
+
+        startMeasuringGas("Mint 10");
+        erc721a.mint(address(10), 10);
+        stopMeasuringGas();
     }
 
-    function testGas_safeMint2() public {
-        unchecked {
-            erc721a.mint(alice, 2);
-        }
-    }
+    function testGas_safeMint() public {
+        // start slots warm
+        startMeasuringGas("First mint");
+        erc721a.safeMint(address(69), 1);
+        stopMeasuringGas();
 
-    function testGas_safeMint3() public {
-        unchecked {
-            erc721a.mint(alice, 3);
-        }
-    }
+        startMeasuringGas("Mint 1");
+        erc721a.safeMint(address(1), 1);
+        stopMeasuringGas();
 
-    function testGas_safeMint4() public {
-        unchecked {
-            erc721a.mint(alice, 4);
-        }
-    }
+        startMeasuringGas("Mint 2");
+        erc721a.safeMint(address(2), 2);
+        stopMeasuringGas();
 
-    function testGas_safeMint5() public {
-        unchecked {
-            erc721a.mint(alice, 5);
-        }
-    }
+        startMeasuringGas("Mint 3");
+        erc721a.safeMint(address(3), 3);
+        stopMeasuringGas();
 
-    function testGas_safeMintA() public {
-        unchecked {
-            erc721a.mint(alice, 10);
-        }
+        startMeasuringGas("Mint 4");
+        erc721a.safeMint(address(4), 4);
+        stopMeasuringGas();
+
+        startMeasuringGas("Mint 5");
+        erc721a.safeMint(address(5), 5);
+        stopMeasuringGas();
+
+        startMeasuringGas("Mint 10");
+        erc721a.safeMint(address(10), 10);
+        stopMeasuringGas();
     }
 
     function testGas_transferFrom() public {
