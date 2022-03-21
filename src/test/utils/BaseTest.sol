@@ -1,56 +1,47 @@
 // SPDX-License-Identifier: MIT
+pragma solidity >=0.6.0 <0.9.0;
 
-pragma solidity ^0.8.0;
+import "forge-std/stdlib.sol";
+import { console } from "forge-std/console.sol";
+import { DSTestPlus } from "solmate/test/utils/DSTestPlus.sol";
 
-import { DSTest } from "ds-test/test.sol";
-import { Utilities } from "../utils/Utilities.sol";
-import { Hevm } from "../utils/Hevm.sol";
+abstract contract BaseTest is DSTestPlus, stdCheats {
+    Vm internal immutable vm = Vm(HEVM_ADDRESS);
 
-import { DSTestPlus } from "@rari-capital/solmate/src/test/utils/DSTestPlus.sol";
+    function getRandomAddress(uint256 salt) internal virtual returns (address) {
+        return address(uint160(getRandom256(salt)));
+    }
 
-// solhint-disable no-empty-blocks
+    function getRandom256(uint256 salt) internal virtual returns (uint256) {
+        return uint256(keccak256(abi.encodePacked(salt)));
+    }
 
-abstract contract BaseTest is DSTestPlus {
-	Hevm internal immutable vm = Hevm(HEVM_ADDRESS);
+    function onERC721Received(
+        address,
+        address,
+        uint256,
+        bytes calldata
+    ) external view virtual returns (bytes4) {
+        return this.onERC721Received.selector;
+    }
 
-	function onERC721Received(
-		address,
-		address,
-		uint256,
-		bytes calldata
-	) external pure virtual returns (bytes4) {
-		return this.onERC721Received.selector;
-	}
+    function onERC1155Received(
+        address,
+        address,
+        uint256,
+        uint256,
+        bytes calldata
+    ) external view virtual returns (bytes4) {
+        return this.onERC1155Received.selector;
+    }
 
-	function onERC1155Received(
-		address,
-		address,
-		uint256,
-		uint256,
-		bytes calldata
-	) external pure virtual returns (bytes4) {
-		return this.onERC1155Received.selector;
-	}
-
-	function onERC1155BatchReceived(
-		address,
-		address,
-		uint256[] calldata,
-		uint256[] calldata,
-		bytes calldata
-	) external virtual returns (bytes4) {
-		return this.onERC1155BatchReceived.selector;
-	}
-
-	receive() external payable virtual {}
-
-	fallback() external payable virtual {}
-
-	function getRandom256(uint256 salt) internal pure virtual returns (uint256) {
-		return uint256(keccak256(abi.encodePacked(salt)));
-	}
-
-	function getRandomAddress(uint256 salt) internal virtual returns (address) {
-		return address(uint160(getRandom256(salt)));
-	}
+    function onERC1155BatchReceived(
+        address,
+        address,
+        uint256[] calldata,
+        uint256[] calldata,
+        bytes calldata
+    ) external view virtual returns (bytes4) {
+        return this.onERC1155BatchReceived.selector;
+    }
 }
