@@ -33,7 +33,7 @@ contract MockERC721A is ERC721A, Ownable, ReentrancyGuard {
         return _exists(tokenId);
     }
 
-    function safeMint(address to, uint256 quantity) public payable {
-        _safeMint(to, quantity);
+    function safeMint(address to, uint256 amount) public payable {
+        _safeMint(to, amount);
     }
 }
