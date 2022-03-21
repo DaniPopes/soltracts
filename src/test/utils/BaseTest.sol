@@ -8,6 +8,20 @@ import "forge-std/console.sol";
 abstract contract BaseTest is DSTestPlus, stdCheats {
     Hevm internal constant vm = Hevm(HEVM_ADDRESS);
 
+    address internal constant alice =
+        address(uint160(uint256(keccak256(abi.encodePacked("alice")))));
+    address internal constant bob = address(uint160(uint256(keccak256(abi.encodePacked("bob")))));
+    address internal constant dead = 0x000000000000000000000000000000000000dEaD;
+
+    constructor() payable {
+        vm.label(alice, "Alice");
+        vm.label(bob, "Bob");
+        vm.label(address(vm), "VM");
+        vm.label(console.CONSOLE_ADDRESS, "Console");
+        vm.label(dead, "Dead");
+        vm.label(address(0), "address(0)");
+    }
+
     string private label = "1";
     uint256 private gasBefore = 1;
     uint256 private gasCounter = 1;
