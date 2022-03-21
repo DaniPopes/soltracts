@@ -34,4 +34,16 @@ contract MockERC721Tradable is ERC721A, ERC721Tradable {
     {
         return super.isApprovedForAll(a, b);
     }
+
+    function _safeMint(address to, uint256 amount) internal override(ERC721, ERC721A) {
+        ERC721A._safeMint(to, amount);
+    }
+
+    function _safeMint(
+        address to,
+        uint256 amount,
+        bytes calldata data
+    ) internal override(ERC721, ERC721A) {
+        ERC721A._safeMint(to, amount, data);
+    }
 }

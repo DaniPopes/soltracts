@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.4;
 
-import { ERC721 } from "./ERC721.sol";
+import { ERC721, ERC721TokenReceiver } from "./ERC721.sol";
 
 /// @author DaniPopes (https://github.com/danipopes/soltracts/)
 /// @notice Implementation of the [ERC721](https://eips.ethereum.org/EIPS/eip-721) Non-Fungible Token Standard,
@@ -140,6 +140,12 @@ abstract contract ERC721A is ERC721 {
     /*                               INTERNAL LOGIC                               */
     /* -------------------------------------------------------------------------- */
 
+    /// @dev Mints `amount` of tokens and transfers them to `to`.
+    /// Requirements:
+    /// - `to` cannot be the zero address.
+    /// - If `to` is a contract it must implement {ERC721TokenReceiver.onERC721Received}
+    /// that returns {ERC721TokenReceiver.onERC721Received.selector}.
+    /// @param amount Amount of tokens to mint.
     /// @inheritdoc ERC721
     function _mint(address to, uint256 amount) internal virtual override {
         if (to == address(0)) revert invalidRecipient();
@@ -161,6 +167,57 @@ abstract contract ERC721A is ERC721 {
         }
     }
 
+    /// @dev Mints `amount` of tokens and transfers them safely to `to`.
+    /// Requirements:
+    /// - `to` cannot be the zero address.
+    /// - If `to` is a contract it must implement {ERC721TokenReceiver.onERC721Received}
+    /// that returns {ERC721TokenReceiver.onERC721Received.selector}.
+    /// Emits `amount` {Transfer} events.
+    /// @param amount Amount of tokens to mint.
+    /// @inheritdoc ERC721
+    function _safeMint(address to, uint256 amount) internal virtual override {
+        _mint(to, amount);
+
+        unchecked {
+            if (to.code.length != 0) {
+                uint256 idx = currentIndex;
+                for (uint256 i = idx - amount; i < idx; i++)
+                    if (
+                        ERC721TokenReceiver(to).onERC721Received(msg.sender, address(0), i, "") !=
+                        ERC721TokenReceiver.onERC721Received.selector
+                    ) revert unsafeRecipient();
+            }
+        }
+    }
+
+    /// @dev Mints `amount` of tokens and transfers them safely to `to`.
+    /// Requirements:
+    /// - `to` cannot be the zero address.
+    /// - If `to` is a contract it must implement {ERC721TokenReceiver.onERC721Received}
+    /// that returns {ERC721TokenReceiver.onERC721Received.selector}.
+    /// Emits `amount` {Transfer} events.
+    /// Additionally passes `data` in the callback.
+    /// @param amount Amount of tokens to mint.
+    /// @inheritdoc ERC721
+    function _safeMint(
+        address to,
+        uint256 amount,
+        bytes calldata data
+    ) internal virtual override {
+        _mint(to, amount);
+
+        unchecked {
+            if (to.code.length != 0) {
+                uint256 idx = currentIndex;
+                for (uint256 i = idx - amount; i < idx; i++)
+                    if (
+                        ERC721TokenReceiver(to).onERC721Received(msg.sender, address(0), i, data) !=
+                        ERC721TokenReceiver.onERC721Received.selector
+                    ) revert unsafeRecipient();
+            }
+        }
+    }
+
     /// @inheritdoc ERC721
     function _exists(uint256 id) internal view virtual override returns (bool) {
         return id != 0 && id < currentIndex;
@@ -172,6 +229,7 @@ abstract contract ERC721A is ERC721 {
         address to,
         uint256 id
     ) internal virtual override {
+        // _ownershipOf also checks for existence
         TokenOwnership memory prevOwnership = _ownershipOf(id);
         address owner = prevOwnership.owner;
 
