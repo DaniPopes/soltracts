@@ -14,6 +14,28 @@ import { ERC721 } from "./ERC721.sol";
 /// - {tokenURI}.
 abstract contract ERC721A is ERC721 {
     /* -------------------------------------------------------------------------- */
+    /*                                   ERRORS                                   */
+    /* -------------------------------------------------------------------------- */
+
+    /// @dev Thrown when queried index is out of bounds.
+    error invalidIndex();
+
+    /// @dev Thrown when queried owner is address(0).
+    error invalidOwner();
+
+    /// @dev Thrown when transfer or mint recipient is address(0).
+    error invalidRecipient();
+
+    /// @dev Thrown when mint amount is 0.
+    error invalidAmount();
+
+    /// @dev Thrown when `from` transfer parameter is address(0).
+    error wrongFrom();
+
+    /// @dev Thrown when couldn't find queried token. Should never happen.
+    error notFound();
+
+    /* -------------------------------------------------------------------------- */
     /*                               ERC721A STORAGE                              */
     /* -------------------------------------------------------------------------- */
 
@@ -61,8 +83,7 @@ abstract contract ERC721A is ERC721 {
     }
 
     /// @dev Use along with {balanceOf} to enumerate all of `owner`'s tokens.
-    /// This read function is O({totalSupply}). If calling from a separate contract, be sure to test gas first.
-    /// It may also degrade with extremely large collection sizes (e.g >> 10000), test for your use case.
+    /// WARNING: This function is extremely gas-inefficient as it is O({totalSupply}).
     /// @inheritdoc ERC721
     function tokenOfOwnerByIndex(address owner, uint256 index)
         public
@@ -71,7 +92,7 @@ abstract contract ERC721A is ERC721 {
         override
         returns (uint256)
     {
-        require(index < balanceOf(owner), "INVALID_INDEX");
+        if (index >= balanceOf(owner)) revert invalidIndex();
 
         uint256 minted = currentIndex;
         uint256 ownerIndex;
@@ -81,13 +102,11 @@ abstract contract ERC721A is ERC721 {
         unchecked {
             for (uint256 i = 0; i < minted; i++) {
                 address _owner = _ownerships[i].owner;
-                if (_owner != address(0)) {
-                    currOwner = _owner;
-                }
+                if (_owner != address(0)) currOwner = _owner;
+
                 if (currOwner == owner) {
-                    if (ownerIndex == index) {
-                        return i;
-                    }
+                    if (ownerIndex == index) return i;
+
                     ownerIndex++;
                 }
             }
@@ -98,7 +117,7 @@ abstract contract ERC721A is ERC721 {
 
     /// @inheritdoc ERC721
     function tokenByIndex(uint256 index) public view virtual override returns (uint256) {
-        require(_exists(index), "INVALID_INDEX");
+        if (!_exists(index)) revert invalidIndex();
         return index;
     }
 
@@ -108,7 +127,7 @@ abstract contract ERC721A is ERC721 {
 
     /// @inheritdoc ERC721
     function balanceOf(address owner) public view virtual override returns (uint256) {
-        require(owner != address(0), "INVALID_OWNER");
+        if (owner == address(0)) revert invalidOwner();
         return uint256(_addressData[owner].balance);
     }
 
@@ -118,13 +137,13 @@ abstract contract ERC721A is ERC721 {
     }
 
     /* -------------------------------------------------------------------------- */
-    /*                           INTERNAL GENERAL LOGIC                           */
+    /*                               INTERNAL LOGIC                               */
     /* -------------------------------------------------------------------------- */
 
     /// @inheritdoc ERC721
     function _mint(address to, uint256 amount) internal virtual override {
-        require(to != address(0), "INVALID_RECIPIENT");
-        require(amount != 0, "INVALID_AMOUNT");
+        if (to == address(0)) revert invalidRecipient();
+        if (amount == 0) revert invalidAmount();
 
         // Counter or mint amount overflow is incredibly unrealistic.
         unchecked {
@@ -136,10 +155,7 @@ abstract contract ERC721A is ERC721 {
             _ownerships[startId].owner = to;
             _ownerships[startId].timestamp = uint64(block.timestamp);
 
-            for (uint256 i; i < amount; i++) {
-                emit Transfer(address(0), to, startId);
-                startId++;
-            }
+            for (uint256 i; i < amount; i++) emit Transfer(address(0), to, startId++);
 
             currentIndex = startId;
         }
@@ -157,15 +173,15 @@ abstract contract ERC721A is ERC721 {
         uint256 id
     ) internal virtual override {
         TokenOwnership memory prevOwnership = _ownershipOf(id);
+        address owner = prevOwnership.owner;
 
-        require(prevOwnership.owner == from, "WRONG_FROM");
-        require(to != address(0), "INVALID_RECIPIENT");
-        require(
-            msg.sender == prevOwnership.owner ||
-                getApproved(id) == msg.sender ||
-                isApprovedForAll(prevOwnership.owner, msg.sender),
-            "NOT_AUTHORIZED"
-        );
+        if (from != owner) revert wrongFrom();
+        if (to == address(0)) revert invalidRecipient();
+        if (
+            !isApprovedForAll(owner, msg.sender) &&
+            msg.sender != owner &&
+            msg.sender != getApproved(id)
+        ) revert notAuthorized();
 
         // Clear approvals
         delete _tokenApprovals[id];
@@ -173,8 +189,8 @@ abstract contract ERC721A is ERC721 {
         // Underflow of the sender's balance is impossible because we check for
         // ownership above and the recipient's balance can't realistically overflow.
         unchecked {
-            _addressData[from].balance -= 1;
-            _addressData[to].balance += 1;
+            _addressData[from].balance--;
+            _addressData[to].balance++;
 
             // Set new owner
             _ownerships[id].owner = to;
@@ -182,11 +198,8 @@ abstract contract ERC721A is ERC721 {
             uint256 nextId = id + 1;
             // If the ownership slot of id + 1 is not explicitly set, that means the transfer initiator owns it.
             // Set the slot of id + 1 explicitly in storage to maintain correctness for ownerOf(id + 1) calls.
-            if (_ownerships[nextId].owner == address(0)) {
-                if (_exists(nextId)) {
-                    _ownerships[nextId].owner = prevOwnership.owner;
-                }
-            }
+            if (_ownerships[nextId].owner == address(0) && _exists(nextId))
+                _ownerships[nextId].owner = prevOwnership.owner;
         }
 
         emit Transfer(from, to, id);
@@ -196,7 +209,7 @@ abstract contract ERC721A is ERC721 {
     /// @param owner Address to query.
     /// @return Number of tokens minted by `owner`.
     function _numberMinted(address owner) public view virtual returns (uint256) {
-        require(owner != address(0), "INVALID_OWNER");
+        if (owner == address(0)) revert invalidOwner();
         return uint256(_addressData[owner].numberMinted);
     }
 
@@ -204,10 +217,10 @@ abstract contract ERC721A is ERC721 {
     /// @param id Token ID to query.
     /// @return {TokenOwnership} of `id`.
     function _ownershipOf(uint256 id) internal view virtual returns (TokenOwnership memory) {
-        require(_exists(id), "NONEXISTENT_TOKEN");
+        if (!_exists(id)) revert nonExistentToken();
 
         unchecked {
-            for (uint256 curr = id; curr >= 0; curr--) {
+            for (uint256 curr = id; curr > 0; curr--) {
                 TokenOwnership memory ownership = _ownerships[curr];
                 if (ownership.owner != address(0)) {
                     return ownership;
@@ -215,16 +228,15 @@ abstract contract ERC721A is ERC721 {
             }
         }
 
-        revert("NOT_FOUND");
+        revert notFound();
     }
 
-    /// @notice Returns all token IDs owned by an address.
-    /// This read function is O({totalSupply}). If calling from a separate contract, be sure to test gas first.
-    /// It may also degrade with extremely large collection sizes (e.g >> 10000), test for your use case.
+    /// @dev Returns all token IDs owned by an address.
+    /// WARNING: This function is extremely gas-inefficient as it is O({totalSupply}).
     /// @param owner Address to query.
     /// @return ids An array of the ID's owned by `owner`.
     function _idsOfOwner(address owner) internal view virtual returns (uint256[] memory ids) {
-        uint256 bal = uint256(_addressData[owner].balance);
+        uint256 bal = balanceOf(owner);
         if (bal == 0) return ids;
 
         ids = new uint256[](bal);
