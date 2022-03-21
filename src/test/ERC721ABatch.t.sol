@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.0;
+pragma solidity ^0.8.4;
 
 import "./utils/BaseTest.sol";
 import { MockERC721Batch } from "./utils/mocks/MockERC721Batch.sol";

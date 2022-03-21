@@ -1,6 +1,5 @@
 // SPDX-License-Identifier: MIT
-
-pragma solidity ^0.8.0;
+pragma solidity ^0.8.4;
 
 import "../../../tokens/ERC721/ERC721A.sol";
 import "../../../tokens/ERC721/extensions/ERC721Batch.sol";
