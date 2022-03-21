@@ -20,39 +20,36 @@ contract TestERC721ATradable is BaseTest {
             address(proxyRegistry),
             address(transferManagerERC721)
         );
+
+        vm.label(address(proxyRegistry), "OpenSea Proxy Registry");
+        vm.label(address(transferManagerERC721), "LooksRare Transfer Manager (ERC721)");
+        vm.label(address(erc721aTradable), "ERC721ATradable");
+        vm.label(address(this), "TestERC721ATradable");
     }
 
-    function testDeployGas() public {
-        unchecked {
-            new MockERC721Tradable(
-                "abcdefg",
-                "xyz",
-                getRandomAddress(0x69),
-                getRandomAddress(0x420)
-            );
-        }
-    }
+    function test_marketplaceApprovalForAll() public {
+        vm.startPrank(alice);
 
-    function testIsApprovedForAll() public {
-        address from = address(0x69);
-        vm.startPrank(from);
+        erc721aTradable.safeMint(alice, 5);
 
-        erc721aTradable.safeMint(from, 5);
+        address proxy = proxyRegistry.registerProxy(alice);
 
-        address proxy = proxyRegistry.registerProxy(from);
-
-        assertTrue(erc721aTradable.isApprovedForAll(from, proxy));
-        assertTrue(erc721aTradable.isApprovedForAll(from, address(transferManagerERC721)));
+        assertTrue(erc721aTradable.isApprovedForAll(alice, proxy));
+        assertTrue(erc721aTradable.isApprovedForAll(alice, address(transferManagerERC721)));
 
         erc721aTradable.setMarketplaceApprovalForAll(false);
 
-        assertFalse(erc721aTradable.isApprovedForAll(from, proxy));
-        assertFalse(erc721aTradable.isApprovedForAll(from, address(transferManagerERC721)));
+        assertFalse(erc721aTradable.isApprovedForAll(alice, proxy));
+        assertFalse(erc721aTradable.isApprovedForAll(alice, address(transferManagerERC721)));
 
         erc721aTradable.setApprovalForAll(proxy, true);
         erc721aTradable.setApprovalForAll(address(transferManagerERC721), true);
 
-        assertTrue(erc721aTradable.isApprovedForAll(from, proxy));
-        assertTrue(erc721aTradable.isApprovedForAll(from, address(transferManagerERC721)));
+        assertTrue(erc721aTradable.isApprovedForAll(alice, proxy));
+        assertTrue(erc721aTradable.isApprovedForAll(alice, address(transferManagerERC721)));
+    }
+
+    function testGas_deploy() public {
+        new MockERC721Tradable("abcdefg", "xyz", alice, bob);
     }
 }
