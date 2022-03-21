@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 pragma solidity ^0.8.4;
 
-import { ERC721 } from "./ERC721.sol";
+import { ERC721, ERC721TokenReceiver } from "./ERC721.sol";
 
 /// @author DaniPopes (https://github.com/danipopes/soltracts/)
 /// @notice Refactored from beskay/ERC721B (https://github.com/beskay/ERC721B).
@@ -11,6 +11,28 @@ import { ERC721 } from "./ERC721.sol";
 /// Assumes serials are sequentially minted starting at 0 (e.g. 0, 1, 2, 3..).
 /// Does not support burning tokens to address(0).
 abstract contract ERC721B is ERC721 {
+    /* -------------------------------------------------------------------------- */
+    /*                                   ERRORS                                   */
+    /* -------------------------------------------------------------------------- */
+
+    /// @dev Thrown when queried index is out of bounds.
+    error invalidIndex();
+
+    /// @dev Thrown when queried owner is address(0).
+    error invalidOwner();
+
+    /// @dev Thrown when transfer or mint recipient is address(0).
+    error invalidRecipient();
+
+    /// @dev Thrown when mint amount is 0.
+    error invalidAmount();
+
+    /// @dev Thrown when `from` transfer parameter is address(0).
+    error wrongFrom();
+
+    /// @dev Thrown when couldn't find queried token. Should never happen.
+    error notFound();
+
     /* -------------------------------------------------------------------------- */
     /*                               ERC721B STORAGE                              */
     /* -------------------------------------------------------------------------- */
@@ -23,6 +45,7 @@ abstract contract ERC721B is ERC721 {
     /* -------------------------------------------------------------------------- */
 
     constructor(string memory name_, string memory symbol_) ERC721(name_, symbol_) {
+        // init to 1
         _owners.push();
     }
 
@@ -48,11 +71,11 @@ abstract contract ERC721B is ERC721 {
         override
         returns (uint256)
     {
-        require(index < balanceOf(owner), "INVALID_INDEX");
+        if (index >= balanceOf(owner)) revert invalidIndex();
 
         uint256 count;
         uint256 length = _owners.length;
-        for (uint256 i; i < length; i++) {
+        for (uint256 i = 1; i < length; i++) {
             if (owner == ownerOf(i)) {
                 if (count == index) return i;
                 else count++;
@@ -64,7 +87,7 @@ abstract contract ERC721B is ERC721 {
 
     /// @inheritdoc ERC721
     function tokenByIndex(uint256 index) public view virtual override returns (uint256) {
-        require(_exists(index), "INVALID_INDEX");
+        if (!_exists(index)) revert invalidIndex();
         return index;
     }
 
@@ -77,7 +100,7 @@ abstract contract ERC721B is ERC721 {
     /// as it can become quite expensive -- call this function off chain instead.
     /// @inheritdoc ERC721
     function balanceOf(address owner) public view virtual override returns (uint256) {
-        require(owner != address(0), "INVALID_OWNER");
+        if (owner == address(0)) revert invalidOwner();
 
         uint256 count;
         uint256 length = _owners.length;
@@ -93,7 +116,7 @@ abstract contract ERC721B is ERC721 {
 
     /// @inheritdoc ERC721
     function ownerOf(uint256 id) public view virtual override returns (address) {
-        require(_exists(id), "NONEXISTENT_TOKEN");
+        if (!_exists(id)) revert nonExistentToken();
 
         for (uint256 i = id; ; i++) {
             address _owner = _owners[i];
@@ -109,10 +132,16 @@ abstract contract ERC721B is ERC721 {
     /*                               INTERNAL LOGIC                               */
     /* -------------------------------------------------------------------------- */
 
+    /// @dev Mints `amount` of tokens and transfers them to `to`.
+    /// Requirements:
+    /// - `to` cannot be the zero address.
+    /// - If `to` is a contract it must implement {ERC721TokenReceiver.onERC721Received}
+    /// that returns {ERC721TokenReceiver.onERC721Received.selector}.
+    /// @param amount Amount of tokens to mint.
     /// @inheritdoc ERC721
     function _mint(address to, uint256 amount) internal virtual override {
-        require(to != address(0), "INVALID_RECIPIENT");
-        require(amount != 0, "INVALID_AMOUNT");
+        if (to == address(0)) revert invalidRecipient();
+        if (amount == 0) revert invalidAmount();
 
         // Counter or mint amount overflow is incredibly unrealistic.
         unchecked {
@@ -129,6 +158,57 @@ abstract contract ERC721B is ERC721 {
         }
     }
 
+    /// @dev Mints `amount` of tokens and transfers them safely to `to`.
+    /// Requirements:
+    /// - `to` cannot be the zero address.
+    /// - If `to` is a contract it must implement {ERC721TokenReceiver.onERC721Received}
+    /// that returns {ERC721TokenReceiver.onERC721Received.selector}.
+    /// Emits `amount` {Transfer} events.
+    /// @param amount Amount of tokens to mint.
+    /// @inheritdoc ERC721
+    function _safeMint(address to, uint256 amount) internal virtual override {
+        _mint(to, amount);
+
+        unchecked {
+            if (to.code.length != 0) {
+                uint256 idx = _owners.length;
+                for (uint256 i = idx - amount; i < idx; i++)
+                    if (
+                        ERC721TokenReceiver(to).onERC721Received(msg.sender, address(0), i, "") !=
+                        ERC721TokenReceiver.onERC721Received.selector
+                    ) revert unsafeRecipient();
+            }
+        }
+    }
+
+    /// @dev Mints `amount` of tokens and transfers them safely to `to`.
+    /// Requirements:
+    /// - `to` cannot be the zero address.
+    /// - If `to` is a contract it must implement {ERC721TokenReceiver.onERC721Received}
+    /// that returns {ERC721TokenReceiver.onERC721Received.selector}.
+    /// Emits `amount` {Transfer} events.
+    /// Additionally passes `data` in the callback.
+    /// @param amount Amount of tokens to mint.
+    /// @inheritdoc ERC721
+    function _safeMint(
+        address to,
+        uint256 amount,
+        bytes calldata data
+    ) internal virtual override {
+        _mint(to, amount);
+
+        unchecked {
+            if (to.code.length != 0) {
+                uint256 idx = _owners.length;
+                for (uint256 i = idx - amount; i < idx; i++)
+                    if (
+                        ERC721TokenReceiver(to).onERC721Received(msg.sender, address(0), i, data) !=
+                        ERC721TokenReceiver.onERC721Received.selector
+                    ) revert unsafeRecipient();
+            }
+        }
+    }
+
     /// @inheritdoc ERC721
     function _exists(uint256 id) internal view virtual override returns (bool) {
         return id != 0 && id < _owners.length;
@@ -140,14 +220,13 @@ abstract contract ERC721B is ERC721 {
         address to,
         uint256 id
     ) internal virtual override {
-        require(ownerOf(id) == from, "WRONG_FROM");
-        require(to != address(0), "INVALID_RECIPIENT");
-        require(
-            msg.sender == from ||
-                getApproved(id) == msg.sender ||
-                isApprovedForAll(from, msg.sender),
-            "NOT_AUTHORIZED"
-        );
+        if (from != ownerOf(id)) revert wrongFrom();
+        if (to == address(0)) revert invalidRecipient();
+        if (
+            !isApprovedForAll(from, msg.sender) &&
+            msg.sender != from &&
+            msg.sender != getApproved(id)
+        ) revert notAuthorized();
 
         // Clear approvals
         delete _tokenApprovals[id];
