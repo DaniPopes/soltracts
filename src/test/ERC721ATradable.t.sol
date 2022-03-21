@@ -1,8 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-import { console } from "./utils/Console.sol";
-import { BaseTest } from "./utils/BaseTest.sol";
+import "./utils/BaseTest.sol";
 import { MockProxyRegistry } from "./utils/mocks/MockProxyRegistry.sol";
 import { MockERC721Tradable } from "./utils/mocks/MockERC721Tradable.sol";
 import { MockTransferManagerERC721 } from "./utils/mocks/MockTransferManagerERC721.sol";

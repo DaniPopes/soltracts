@@ -1,8 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-import { console } from "./utils/Console.sol";
-import { BaseTest } from "./utils/BaseTest.sol";
+import "./utils/BaseTest.sol";
 import { MockERC721A } from "./utils/mocks/MockERC721A.sol";
 
 contract TestERC721A is BaseTest {
