@@ -17,13 +17,13 @@ contract MockERC721Tradable is ERC721A, ERC721Tradable {
 		_safeMint(to, amount);
 	}
 
-	function setMarketplaceApprovalForAll(bool approved) public override {
-		marketPlaceApprovalForAll = approved;
+	function setMarketplaceApprovalForAll(bool approved) public {
+		_setMarketplaceApprovalForAll(approved);
 	}
 
 	function tokenURI(uint256 id) public view override returns (string memory) {}
 
 	function isApprovedForAll(address a, address b) public view override(ERC721, ERC721Tradable) returns (bool c) {
-		return ERC721Tradable.isApprovedForAll(a, b);
+		return super.isApprovedForAll(a, b);
 	}
 }

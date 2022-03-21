@@ -14,9 +14,9 @@ interface IProxyRegistry {
 /// @notice Tradable extension for ERC721, inspired by @ProjectOpenSea's opensea-creatures (ERC721Tradable).
 /// Whitelists all OpenSea proxy addresses and the LooksRare transfer manager address
 /// in {isApprovedForAll} and saves up to 50,000 gas for each account by removing the need
-/// to {setApprovalForAll} before being able to trade on the marketplaces.
-/// @dev Mitigating this issue: https://github.com/chiru-labs/ERC721A/issues/40#issuecomment-1024861728
-/// by providing a function ({setMarketplaceApprovalForAll}) to revoke these approvals.
+/// to {setApprovalForAll} before being able to trade on said marketplaces.
+/// @dev Mitigated [this issue](https://github.com/chiru-labs/ERC721A/issues/40#issuecomment-1024861728)
+/// by providing a function ({_setMarketplaceApprovalForAll}) to revoke the marketplace approvals.
 abstract contract ERC721Tradable is ERC721 {
 	/* -------------------------------------------------------------------------- */
 	/*                              IMMUTABLE STORAGE                             */
@@ -33,8 +33,8 @@ abstract contract ERC721Tradable is ERC721 {
 	/* -------------------------------------------------------------------------- */
 
 	/// @notice Returns true if the stored marketplace addresses are whitelisted in {isApprovedForAll}.
-	/// @dev Enabled by default. Switch off with {setMarketplaceApprovalForAll}.
-	bool public marketPlaceApprovalForAll = true;
+	/// @dev Enabled by default. Change with {_setMarketplaceApprovalForAll}.
+	bool public marketplaceApprovalForAll = true;
 
 	/* -------------------------------------------------------------------------- */
 	/*                                 CONSTRUCTOR                                */
@@ -51,24 +51,23 @@ abstract contract ERC721Tradable is ERC721 {
 	/// - ETHEREUM RINKEBY: 0x3f65A762F15D01809cDC6B43d8849fF24949c86a
 	/// @param _openSeaProxyRegistry The OpenSea proxy registry address.
 	constructor(address _openSeaProxyRegistry, address _looksRareTransferManager) {
-		require(_openSeaProxyRegistry != address(0) && _looksRareTransferManager != address(0), "INVALID_ADDRESS");
 		openSeaProxyRegistry = _openSeaProxyRegistry;
 		looksRareTransferManager = _looksRareTransferManager;
 	}
 
 	/* -------------------------------------------------------------------------- */
-	/*                            ERC721ATradable LOGIC                           */
+	/*                            ERC721Tradable LOGIC                            */
 	/* -------------------------------------------------------------------------- */
 
-	/// @notice Enables or disables the marketplace whitelist in {isApprovedForAll}.
-	/// @dev Must be implemented in inheriting contracts.
-	/// Recommended to use in combination with an access control contract (e.g. OpenZeppelin's Ownable).
-	function setMarketplaceApprovalForAll(bool approved) public virtual;
-
-	/// @return True if `operator` is a whitelisted marketplace contract or if it was approved by `owner` with {ERC721A.setApprovalForAll}.
+	/// @return `true` if `operator` is a whitelisted marketplace contract or if it was approved by `owner` with {ERC721-setApprovalForAll}.
 	/// @inheritdoc ERC721
 	function isApprovedForAll(address owner, address operator) public view virtual override returns (bool) {
-		if (marketPlaceApprovalForAll && (operator == IProxyRegistry(openSeaProxyRegistry).proxies(owner) || operator == looksRareTransferManager)) return true;
+		if (marketplaceApprovalForAll && (operator == IProxyRegistry(openSeaProxyRegistry).proxies(owner) || operator == looksRareTransferManager)) return true;
 		return super.isApprovedForAll(owner, operator);
+	}
+
+	/// @dev Enables or disables the marketplace whitelist.
+	function _setMarketplaceApprovalForAll(bool approved) internal virtual {
+		marketplaceApprovalForAll = approved;
 	}
 }
