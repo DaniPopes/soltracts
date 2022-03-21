@@ -1,12 +1,7 @@
 # folders
-artifacts/
-build/
+.github/
+.vscode/
 cache/
-coverage/
-dist/
 lib/
 node_modules/
-typechain/
-
-# files
-coverage.json
+out/

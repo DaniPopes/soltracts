@@ -1,6 +1,7 @@
 # folders
-.yarn/
+.github/
+.vscode/
+cache/
 lib/
-build/
-dist/
 node_modules/
+out/

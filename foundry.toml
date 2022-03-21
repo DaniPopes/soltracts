@@ -4,14 +4,14 @@ src = "src"
 test = "test"
 out = "out"
 libs = ["lib"]
-remappings = ["@rari-capital/solmate/=lib/solmate/", "ds-test/=lib/ds-test/src/", "@openzeppelin/=lib/openzeppelin-contracts/"]
-libraries = []
+remappings = ["@chainlink/=lib/chainlink/", "@openzeppelin/=lib/openzeppelin-contracts/", "@rari-capital/solmate/=lib/solmate/"]
+# libraries = []
 cache = true
 force = false
 evm_version = "london"
 gas_reports = ["*"]
-## Sets the concrete solc version to use, this overrides the `auto_detect_solc` value
-# solc_version = "0.8.11"
+# Sets the concrete solc version to use, this overrides the `auto_detect_solc` value
+solc_version = "0.8.12"
 auto_detect_solc = true
 optimizer = true
 optimizer_runs = 1000000

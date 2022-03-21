@@ -2,22 +2,20 @@
 # (-include to ignore error if it does not exist)
 -include .env
 
-# Dependencies
-update		:; forge update
-
-# Lint
+# Lint & format
+fmt			:; yarn fmt
 lint		:; yarn lint
 
 # Build & test
+build		:; forge build --root .
 clean		:; rm -rf cache && rm -rf out && forge clean --root .
-build		:; make clean && forge build --root .
-test		:; make build -s && forge test --root .
-trace		:; make build -s && forge test -vvv --root .
-tests		:; make build && forge test -vvvvv --root .
-snapshot	:; make build -s && forge snapshot --root .
-
-# Git
-lint-commit	:; make lint && make snapshot && git commit -a -m "prettier, .gas-snapshot"
+gas			:; forge test --root . --gas-report
+snapshot	:; forge snapshot --root .
+test		:; forge test --root .
+logs		:; forge test -vv --root .
+trace		:; forge test -vvv --root .
+trace_all	:; forge test -vvvv --root .
+trace_setup	:; forge test -vvvvv --root .
 
 # Transactions
 # Any env var can be set in .env or in the command (e.g. VALUE="123" cast call ...)

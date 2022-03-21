@@ -1,28 +1,97 @@
 name: CI
+
 on:
   push:
     branches:
-      - main
+      - master
   pull_request:
 
 jobs:
-  run-ci:
+  lint:
+    name: Lint
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - name: Setup node
+        uses: actions/setup-node@v2
+        with:
+          node-version: "16"
+      
+      - name: Checkout the repo
+        uses: actions/checkout@v2
+      
+      - name: Cache dependencies
+        uses: actions/cache@v2
+        env:
+          cache-name: yarn-cache
+        with:
+          path: |
+            ~/.npm
+            ~/.cache
+            **/node_modules
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-build-${{ env.cache-name }}-
+            ${{ runner.os }}-build-
+            ${{ runner.os }}-
+      
+      - name: Run yarn install
+        run: yarn install --frozen-lockfile
+      
+      - name: Run yarn lint
+        run: yarn lint
+
+  # prettier:
+  #   name: Prettier Formatting
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Setup node
+  #       uses: actions/setup-node@v2
+  #       with:
+  #         node-version: "16"
+
+  #     - name: Checkout the repo
+  #       uses: actions/checkout@v2
+
+  #     - name: Cache dependencies
+  #       uses: actions/cache@v2
+  #       env:
+  #         cache-name: yarn-cache
+  #       with:
+  #         path: |
+  #           ~/.npm
+  #           ~/.cache
+  #           **/node_modules
+  #         key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('yarn.lock') }}
+  #         restore-keys: |
+  #           ${{ runner.os }}-build-${{ env.cache-name }}-
+  #           ${{ runner.os }}-build-
+  #           ${{ runner.os }}-
+
+  #     - name: Run yarn install
+  #       run: yarn install --frozen-lockfile
+
+  #     - name: Run prettier check
+  #       run: yarn prettier:check
+
+  test:
+    name: Forge tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Setup node
+        uses: actions/setup-node@v2
+        with:
+          node-version: "16"
+
+      - name: Checkout the repo
+        uses: actions/checkout@v2
         with:
           submodules: recursive
-      - uses: actions/setup-node@v2
-      - name: Install dev dependencies
-        run: yarn
 
       - name: Install Foundry
         uses: onbjerg/foundry-toolchain@v1
         with:
           version: nightly
-
-      - name: Run lint check
-        run: yarn run lint:check
 
       - name: Run tests
         run: make test
