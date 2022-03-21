@@ -8,7 +8,7 @@ contract TestERC721ABatch is BaseTest {
     MockERC721Batch private erc721aBatch;
 
     function setUp() public {
-        erc721aBatch = new MockERC721Batch("testname", "testsymbol");
+        erc721aBatch = new MockERC721Batch();
 
         vm.label(address(erc721aBatch), "ERC721ABatch");
         vm.label(address(this), "TestERC721ABatch");
@@ -41,7 +41,7 @@ contract TestERC721ABatch is BaseTest {
         assertEq(erc721aBatch.balanceOf(bob), amount);
 
         for (uint256 i; i < amount; i++) {
-            assertEq(erc721aBatch.ownerOf(ids[i]), alice);
+            assertEq(erc721aBatch.ownerOf(ids[i]), bob);
         }
     }
 
@@ -136,6 +136,6 @@ contract TestERC721ABatch is BaseTest {
     }
 
     function testGas_deploy() public {
-        new MockERC721Batch("abcdefg", "xyz");
+        new MockERC721Batch();
     }
 }
