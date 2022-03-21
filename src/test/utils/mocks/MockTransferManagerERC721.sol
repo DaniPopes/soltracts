@@ -7,10 +7,10 @@ contract MockTransferManagerERC721 {
     event GM(address indexed gmer);
 
     function transferFrom(
-        address token,
+        address, /* token */
         address from,
-        address to,
-        uint256 id
+        address, /* to */
+        uint256 /* id */
     ) external {
         emit GM(from);
     }
