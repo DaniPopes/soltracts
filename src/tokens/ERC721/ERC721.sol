@@ -165,7 +165,7 @@ abstract contract ERC721 {
     function approve(address spender, uint256 id) public virtual {
         address owner = ownerOf(id);
 
-        if (!isApprovedForAll(owner, msg.sender) || msg.sender != owner) revert notAuthorized();
+        if (!isApprovedForAll(owner, msg.sender) && msg.sender != owner) revert notAuthorized();
 
         _tokenApprovals[id] = spender;
 
@@ -287,53 +287,55 @@ abstract contract ERC721 {
         uint256 id
     ) internal virtual;
 
-    /// @dev Mints `amount` tokens to `to`.
+    /// @dev Mints `id` token and transfers it to `to`.
     /// Requirements:
-    /// - there must be `amount` tokens remaining unminted in the total collection.
+    /// - `id` token must not exist (have been minted) already.
     /// - `to` cannot be the zero address.
-    /// Emits `amount` {Transfer} events.
+    /// Emits a {Transfer} event.
     /// @param to The address to mint to.
-    /// @param amount The amount of tokens to mint.
-    function _mint(address to, uint256 amount) internal virtual;
+    /// @param id The token ID to mint.
+    function _mint(address to, uint256 id) internal virtual;
 
-    /// @dev Safely mints `amount` of tokens and transfers them to `to`.
-    /// If `to` is a contract it must implement {ERC721TokenReceiver.onERC721Received}
+    /// @dev Safely mints `id` token and transfers it to `to`.
+    /// Requirements:
+    /// - `id` token must not exist (have been minted) already.
+    /// - `to` cannot be the zero address.
+    /// - If `to` is a contract it must implement {ERC721TokenReceiver.onERC721Received}
     /// that returns {ERC721TokenReceiver.onERC721Received.selector}.
+    /// Emits a {Transfer} event.
     /// @param to The address to mint to.
-    /// @param amount The amount of tokens to mint.
-    function _safeMint(address to, uint256 amount) internal virtual {
-        _mint(to, amount);
+    /// @param id The token ID to mint.
+    function _safeMint(address to, uint256 id) internal virtual {
+        _mint(to, id);
 
         if (
             to.code.length != 0 &&
-            ERC721TokenReceiver(to).onERC721Received(address(0), to, totalSupply() - amount, "") !=
+            ERC721TokenReceiver(to).onERC721Received(address(0), to, id, "") !=
             ERC721TokenReceiver.onERC721Received.selector
         ) revert unsafeRecipient();
     }
 
-    /// @dev Safely mints `amount` of tokens and transfers them to `to`.
+    /// @dev Safely mints `id` token and transfers it to `to`.
     /// Requirements:
-    /// - `id` must not exist.
-    /// - If `to` refers to a smart contract, it must implement {ERC721TokenReceiver.onERC721Received}, which is called upon a safe transfer.
+    /// - `id` token must not exist (have been minted) already.
+    /// - `to` cannot be the zero address.
+    /// - If `to` is a contract it must implement {ERC721TokenReceiver.onERC721Received}
+    /// that returns {ERC721TokenReceiver.onERC721Received.selector}.
+    /// Emits a {Transfer} event.
     /// Additionally passes `data` in the callback.
     /// @param to The address to mint to.
-    /// @param amount The amount of tokens to mint.
+    /// @param id The token ID to mint.
     /// @param data The calldata to pass in the {ERC721TokenReceiver.onERC721Received} callback.
     function _safeMint(
         address to,
-        uint256 amount,
+        uint256 id,
         bytes memory data
     ) internal virtual {
-        _mint(to, amount);
+        _mint(to, id);
 
         if (
             to.code.length != 0 &&
-            ERC721TokenReceiver(to).onERC721Received(
-                address(0),
-                to,
-                totalSupply() - amount,
-                data
-            ) !=
+            ERC721TokenReceiver(to).onERC721Received(address(0), to, id, data) !=
             ERC721TokenReceiver.onERC721Received.selector
         ) revert unsafeRecipient();
     }
