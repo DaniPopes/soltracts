@@ -18,13 +18,13 @@ abstract contract ERC721A is ERC721 {
 	/*                               ERC721A STORAGE                              */
 	/* -------------------------------------------------------------------------- */
 
-	/// @dev Values are packed in a 256 bits word.
+	/// @dev Values are packed in a 256 bit word.
 	struct AddressData {
 		uint128 balance;
 		uint128 numberMinted;
 	}
 
-	/// @dev Values are packed in a 256 bits word.
+	/// @dev Values are packed in a 256 bit word.
 	struct TokenOwnership {
 		address owner;
 		uint64 timestamp;
@@ -33,7 +33,6 @@ abstract contract ERC721A is ERC721 {
 	/// @dev A counter that increments for each minted token.
 	/// Initialized to 1 to make all token ids (1 : `maxSupply`) instead of (0 : (`maxSupply` - 1)).
 	/// Although `maxSupply` is not implemented, it is recommended in all contracts using this implementation.
-	/// Initializing to 0 requires modifying {totalSupply}, {_exists} and {_idsOfOwner}.
 	uint256 internal currentIndex = 1;
 
 	/// @dev ID => {TokenOwnership}
@@ -183,6 +182,32 @@ abstract contract ERC721A is ERC721 {
 		emit Transfer(from, to, id);
 	}
 
+	/// @dev Returns the total number of tokens minted by and address.
+	/// @param owner Address to query.
+	/// @return Number of tokens minted by `owner`.
+	function _numberMinted(address owner) public view virtual returns (uint256) {
+		require(owner != address(0), "INVALID_OWNER");
+		return uint256(_addressData[owner].numberMinted);
+	}
+
+	/// @dev Returns the ownership values for a token ID.
+	/// @param id Token ID to query.
+	/// @return {TokenOwnership} of `id`.
+	function _ownershipOf(uint256 id) internal view virtual returns (TokenOwnership memory) {
+		require(_exists(id), "NONEXISTENT_TOKEN");
+
+		unchecked {
+			for (uint256 curr = id; curr >= 0; curr--) {
+				TokenOwnership memory ownership = _ownerships[curr];
+				if (ownership.owner != address(0)) {
+					return ownership;
+				}
+			}
+		}
+
+		revert("NOT_FOUND");
+	}
+
 	/// @notice Returns all token IDs owned by an address.
 	/// This read function is O({totalSupply}). If calling from a separate contract, be sure to test gas first.
 	/// It may also degrade with extremely large collection sizes (e.g >> 10000), test for your use case.
@@ -212,31 +237,5 @@ abstract contract ERC721A is ERC721 {
 				}
 			}
 		}
-	}
-
-	/// @dev Returns the total number of tokens minted by and address.
-	/// @param owner Address to query.
-	/// @return Number of tokens minted by `owner`.
-	function _numberMinted(address owner) public view virtual returns (uint256) {
-		require(owner != address(0), "INVALID_OWNER");
-		return uint256(_addressData[owner].numberMinted);
-	}
-
-	/// @dev Returns the ownership values for a token ID.
-	/// @param id Token ID to query.
-	/// @return {TokenOwnership} of `id`.
-	function _ownershipOf(uint256 id) internal view virtual returns (TokenOwnership memory) {
-		require(_exists(id), "NONEXISTENT_TOKEN");
-
-		unchecked {
-			for (uint256 curr = id; curr >= 0; curr--) {
-				TokenOwnership memory ownership = _ownerships[curr];
-				if (ownership.owner != address(0)) {
-					return ownership;
-				}
-			}
-		}
-
-		revert("NOT_FOUND");
 	}
 }

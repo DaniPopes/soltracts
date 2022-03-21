@@ -129,10 +129,10 @@ abstract contract ERC721 {
 		return _tokenApprovals[id];
 	}
 
-	/// @notice Returns if the `operator` is allowed to manage all of the assets of `owner`.
+	/// @notice Returns `true` if the `operator` is allowed to manage all of the assets of `owner`.
 	/// @param owner The address of the owner.
 	/// @param operator The address of the operator.
-	/// @return True if `operator` was approved by `owner`.
+	/// @return `true` if `operator` was approved by `owner`.
 	function isApprovedForAll(address owner, address operator) public view virtual returns (bool) {
 		return _operatorApprovals[owner][operator];
 	}
@@ -246,7 +246,7 @@ abstract contract ERC721 {
 	/// @dev Returns whether a token ID exists.
 	/// Tokens can be managed by their owner or approved accounts via {approve} or {setApprovalForAll}.
 	/// Tokens start existing when they are minted.
-	/// @param id Token ID to query.
+	/// @param id The token ID to query.
 	function _exists(uint256 id) internal view virtual returns (bool);
 
 	/// @dev Transfers `id` from `from` to `to`.
