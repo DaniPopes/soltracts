@@ -15,8 +15,6 @@ contract TestERC721ATradable is BaseTest {
         proxyRegistry = new MockProxyRegistry();
         transferManagerERC721 = new MockTransferManagerERC721();
         erc721aTradable = new MockERC721Tradable(
-            "testname",
-            "testsymbol",
             address(proxyRegistry),
             address(transferManagerERC721)
         );
@@ -50,6 +48,6 @@ contract TestERC721ATradable is BaseTest {
     }
 
     function testGas_deploy() public {
-        new MockERC721Tradable("abcdefg", "xyz", alice, bob);
+        new MockERC721Tradable(alice, bob);
     }
 }

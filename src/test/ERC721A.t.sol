@@ -8,7 +8,7 @@ contract TestERC721A is BaseTest {
     MockERC721A internal erc721a;
 
     function setUp() public {
-        erc721a = new MockERC721A("testname", "testsymbol", "https://example.com/12345/");
+        erc721a = new MockERC721A();
         vm.label(address(erc721a), "ERC721A");
         vm.label(address(this), "TestERC721A");
     }
@@ -262,7 +262,7 @@ contract TestERC721A is BaseTest {
 
     function testGas_deploy() public {
         unchecked {
-            new MockERC721A("abcdefg", "xyz", "https://example.com/12345/");
+            new MockERC721A();
         }
     }
 

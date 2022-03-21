@@ -5,16 +5,12 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 import "@rari-capital/solmate/src/utils/ReentrancyGuard.sol";
 import "../../../tokens/ERC721/ERC721A.sol";
 
-contract MockERC721A is ERC721A, Ownable, ReentrancyGuard {
-    constructor(
-        string memory _name,
-        string memory _symbol,
-        string memory _baseURI
-    ) payable ERC721A(_name, _symbol) {
-        baseURI = _baseURI;
-    }
-
+contract MockERC721A is ERC721, ERC721A, Ownable, ReentrancyGuard {
     string public baseURI;
+
+    constructor() payable ERC721A("TestName", "TestSymbol") {
+        baseURI = "https://api.example.com/metadata/";
+    }
 
     function setBaseURI(string calldata _baseURI) external {
         baseURI = _baseURI;
@@ -37,7 +33,23 @@ contract MockERC721A is ERC721A, Ownable, ReentrancyGuard {
         _mint(to, amount);
     }
 
-    function safeMint(address to, uint256 amount) public payable {
+    function safeMint(address to, uint256 amount) public payable nonReentrant {
         _safeMint(to, amount);
+    }
+
+    function _mint(address to, uint256 amount) internal virtual override(ERC721, ERC721A) {
+        ERC721A._mint(to, amount);
+    }
+
+    function _safeMint(address to, uint256 amount) internal virtual override(ERC721, ERC721A) {
+        ERC721A._safeMint(to, amount);
+    }
+
+    function _safeMint(
+        address to,
+        uint256 amount,
+        bytes calldata data
+    ) internal virtual override(ERC721, ERC721A) {
+        ERC721A._safeMint(to, amount, data);
     }
 }
