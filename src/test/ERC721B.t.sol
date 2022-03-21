@@ -20,11 +20,11 @@ contract TestERC721B is BaseTest {
     // uint160(keccak256("0x69")) - checksummed
     address private constant _to = 0xa29Cfe8c2b8F0CeA8C67AF4a20c2C9286D2562a6;
 
-    function testSafeMint(uint256 _amount) public {
-        uint256 amount = (_amount % 128) + 1;
-        erc721b.safeMint(_to, amount);
-        assertEq(erc721b.balanceOf(_to), amount);
-    }
+    // function testSafeMint(uint256 amount) public {
+    //     vm.assume(amount > 0 && amount < type(uint128).max);
+    //     erc721b.safeMint(_to, amount);
+    //     assertEq(erc721b.balanceOf(_to), amount);
+    // }
 
     function testSafeMintGas1() public {
         unchecked {
