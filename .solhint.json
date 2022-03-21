@@ -19,6 +19,7 @@
         "var-name-mixedcase": "off",
         "no-empty-blocks": "off",
         "avoid-low-level-calls": "off",
+        "func-name-mixedcase": "off",
         "prettier/prettier": [
             "error",
             {
