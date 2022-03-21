@@ -7,12 +7,13 @@ Currently there are only ERC721 NFT contracts.
 ## Tokens
 
 ### ERC721
-- **ERC721**: Used at the base of the other ERC721 contracts which implement mint, storage and transfer logic. Includes only metadata and abstract logic.
-- **ERC721A**: Extends `ERC721`. Refactored and optimized version of [chiru-labs's implementation](https://github.com/chiru-labs/ERC721A).
-- **ERC721B**: Extends `ERC721`. Refactored and optimized version of [beskay's implementation](https://github.com/beskay/ERC721B).
-- **Extensions**:
-  * **ERC721Batch**: Extends `ERC721` with batch transfer functions.
-  * **ERC721Tradable**: Extends `ERC721` with NFT marketplace whitelisting for easy trading.
+
+-   **ERC721**: Used at the base of the other ERC721 contracts which implement mint, storage and transfer logic. Includes only metadata and abstract logic.
+-   **ERC721A**: Extends `ERC721`. Refactored and optimized version of [chiru-labs's implementation](https://github.com/chiru-labs/ERC721A).
+-   **ERC721B**: Extends `ERC721`. Refactored and optimized version of [beskay's implementation](https://github.com/beskay/ERC721B).
+-   **Extensions**:
+    -   **ERC721Batch**: Extends `ERC721` with batch transfer functions.
+    -   **ERC721Tradable**: Extends `ERC721` with NFT marketplace whitelisting for easy trading.
 
 ## Installation
 
@@ -61,7 +62,7 @@ _These smart contracts are being provided as is. No guarantee, representation or
 
 These contracts were inspired by or directly modified from many sources, primarily:
 
-- [Chiru-Labs](https://github.com/chiru-labs/ERC721A)
-- [Rari-Capital](https://github.com/Rari-Capital/solmate)
-- [OpenZeppelin](https://github.com/OpenZeppelin/openzeppelin-contracts)
-- [Beskay](https://github.com/beskay/ERC721B)
+-   [Chiru-Labs](https://github.com/chiru-labs/ERC721A)
+-   [Rari-Capital](https://github.com/Rari-Capital/solmate)
+-   [OpenZeppelin](https://github.com/OpenZeppelin/openzeppelin-contracts)
+-   [Beskay](https://github.com/beskay/ERC721B)
