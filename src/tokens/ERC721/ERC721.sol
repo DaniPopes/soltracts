@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.0;
+pragma solidity ^0.8.4;
 
 import { ERC721TokenReceiver } from "./ERC721TokenReceiver.sol";
 
@@ -11,6 +11,19 @@ import { ERC721TokenReceiver } from "./ERC721TokenReceiver.sol";
 /// {_transfer} and {_mint}.
 /// Inheriting contracts must implement the internal functions {_exists}, {_transfer} and {_mint}.
 abstract contract ERC721 {
+    /* -------------------------------------------------------------------------- */
+    /*                                   ERRORS                                   */
+    /* -------------------------------------------------------------------------- */
+
+    /// @dev Thrown when the queried token ID does not exist.
+    error nonExistentToken();
+
+    /// @dev Thrown when the caller is not the owner or it is not authorized to manage a token.
+    error notAuthorized();
+
+    /// @dev Thrown when recipient of a "`safe`" function is not a contract or does not return the correct data.
+    error unsafeRecipient();
+
     /* -------------------------------------------------------------------------- */
     /*                                   EVENTS                                   */
     /* -------------------------------------------------------------------------- */
@@ -128,7 +141,7 @@ abstract contract ERC721 {
     /// @param id Token ID to query.
     /// @return The account approved for `id` token.
     function getApproved(uint256 id) public view virtual returns (address) {
-        require(_exists(id), "NONEXISTENT_TOKEN");
+        if (!_exists(id)) revert nonExistentToken();
         return _tokenApprovals[id];
     }
 
@@ -152,7 +165,7 @@ abstract contract ERC721 {
     function approve(address spender, uint256 id) public virtual {
         address owner = ownerOf(id);
 
-        require(isApprovedForAll(owner, msg.sender) || msg.sender == owner, "NOT_AUTHORIZED");
+        if (!isApprovedForAll(owner, msg.sender) || msg.sender != owner) revert notAuthorized();
 
         _tokenApprovals[id] = spender;
 
@@ -205,12 +218,11 @@ abstract contract ERC721 {
     ) public virtual {
         _transfer(from, to, id);
 
-        require(
-            to.code.length == 0 ||
-                ERC721TokenReceiver(to).onERC721Received(msg.sender, from, id, "") ==
-                ERC721TokenReceiver.onERC721Received.selector,
-            "UNSAFE_RECIPIENT"
-        );
+        if (
+            to.code.length != 0 ||
+            ERC721TokenReceiver(to).onERC721Received(msg.sender, from, id, "") !=
+            ERC721TokenReceiver.onERC721Received.selector
+        ) revert unsafeRecipient();
     }
 
     /// @notice Safely transfers `id` token from `from` to `to`.
@@ -233,12 +245,11 @@ abstract contract ERC721 {
     ) public virtual {
         _transfer(from, to, id);
 
-        require(
-            to.code.length == 0 ||
-                ERC721TokenReceiver(to).onERC721Received(msg.sender, from, id, data) ==
-                ERC721TokenReceiver.onERC721Received.selector,
-            "UNSAFE_RECIPIENT"
-        );
+        if (
+            to.code.length != 0 ||
+            ERC721TokenReceiver(to).onERC721Received(msg.sender, from, id, data) !=
+            ERC721TokenReceiver.onERC721Received.selector
+        ) revert unsafeRecipient();
     }
 
     /// @notice Returns the number of tokens in an account.
@@ -293,17 +304,11 @@ abstract contract ERC721 {
     function _safeMint(address to, uint256 amount) internal virtual {
         _mint(to, amount);
 
-        require(
-            to.code.length == 0 ||
-                ERC721TokenReceiver(to).onERC721Received(
-                    address(0),
-                    to,
-                    totalSupply() - amount,
-                    ""
-                ) ==
-                ERC721TokenReceiver.onERC721Received.selector,
-            "UNSAFE_RECIPIENT"
-        );
+        if (
+            to.code.length != 0 ||
+            ERC721TokenReceiver(to).onERC721Received(address(0), to, totalSupply() - amount, "") !=
+            ERC721TokenReceiver.onERC721Received.selector
+        ) revert unsafeRecipient();
     }
 
     /// @dev Safely mints `amount` of tokens and transfers them to `to`.
@@ -321,17 +326,16 @@ abstract contract ERC721 {
     ) internal virtual {
         _mint(to, amount);
 
-        require(
-            to.code.length == 0 ||
-                ERC721TokenReceiver(to).onERC721Received(
-                    address(0),
-                    to,
-                    totalSupply() - amount,
-                    data
-                ) ==
-                ERC721TokenReceiver.onERC721Received.selector,
-            "UNSAFE_RECIPIENT"
-        );
+        if (
+            to.code.length != 0 ||
+            ERC721TokenReceiver(to).onERC721Received(
+                address(0),
+                to,
+                totalSupply() - amount,
+                data
+            ) !=
+            ERC721TokenReceiver.onERC721Received.selector
+        ) revert unsafeRecipient();
     }
 
     /* -------------------------------------------------------------------------- */
