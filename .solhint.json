@@ -12,7 +12,7 @@
                 "ignoreConstructors": true
             }
         ],
-        "max-line-length": ["warn", 100],
+        "max-line-length": "off",
         "not-rely-on-time": "off",
         "no-inline-assembly": "off",
         "avoid-tx-origin": "off",
