@@ -5,7 +5,7 @@ pragma solidity ^0.8.4;
 /// @author DaniPopes (https://github.com/danipopes/soltracts/)
 /// @author Modified from Solmate (https://github.com/Rari-Capital/solmate/blob/main/src/tokens/ERC20.sol)
 /// @dev Do not manually set balances without updating totalSupply, as the sum of all user balances must not exceed it.
-abstract contract ERC20 {
+abstract contract ERC20Upgradeable {
     /* -------------------------------------------------------------------------- */
     /*                                   ERRORS                                   */
     /* -------------------------------------------------------------------------- */
