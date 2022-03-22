@@ -7,7 +7,7 @@ import "./utils/mocks/MockERC721B.sol";
 contract TestERC721B is BaseTest {
     MockERC721B internal erc721b;
 
-    function setUp() public {
+    function setUp() public virtual {
         erc721b = new MockERC721B("testname", "testsymbol", "https://example.com/12345/");
         vm.label(address(erc721b), "ERC721B");
         vm.label(address(this), "TestERC721B");

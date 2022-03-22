@@ -7,7 +7,7 @@ import "./utils/mocks/MockERC721A.sol";
 contract TestERC721A is BaseTest {
     MockERC721A internal erc721a;
 
-    function setUp() public {
+    function setUp() public virtual {
         erc721a = new MockERC721A();
         vm.label(address(erc721a), "ERC721A");
         vm.label(address(this), "TestERC721A");
@@ -16,9 +16,9 @@ contract TestERC721A is BaseTest {
     function test_mint() public {
         uint256 amount = 5;
 
-        vm.expectRevert(ERC721A.invalidRecipient.selector);
+        vm.expectRevert(ERC721A.InvalidRecipient.selector);
         erc721a.mint(address(0), amount);
-        vm.expectRevert(ERC721A.invalidAmount.selector);
+        vm.expectRevert(ERC721A.InvalidAmount.selector);
         erc721a.mint(alice, 0);
 
         erc721a.mint(alice, amount);
@@ -62,7 +62,7 @@ contract TestERC721A is BaseTest {
         uint256 startId = 1;
         uint256 amount = 5;
 
-        vm.expectRevert(ERC721A.invalidIndex.selector);
+        vm.expectRevert(ERC721A.InvalidIndex.selector);
         erc721a.tokenOfOwnerByIndex(alice, 0);
 
         erc721a.mint(alice, amount);
@@ -75,7 +75,7 @@ contract TestERC721A is BaseTest {
         uint256 startIndex = 1;
         uint256 amount = 1;
 
-        vm.expectRevert(ERC721A.invalidIndex.selector);
+        vm.expectRevert(ERC721A.InvalidIndex.selector);
         erc721a.tokenByIndex(startIndex);
 
         erc721a.mint(alice, amount);
@@ -86,7 +86,7 @@ contract TestERC721A is BaseTest {
         // uint256 startId = 1;
         uint256 amount = 5;
 
-        vm.expectRevert(ERC721A.invalidOwner.selector);
+        vm.expectRevert(ERC721A.InvalidOwner.selector);
         erc721a.balanceOf(address(0));
 
         assertEq(erc721a.balanceOf(alice), 0);
@@ -98,9 +98,9 @@ contract TestERC721A is BaseTest {
         uint256 startId = 1;
         uint256 amount = 5;
 
-        vm.expectRevert(ERC721.nonExistentToken.selector);
+        vm.expectRevert(ERC721.NonExistentToken.selector);
         erc721a.ownerOf(0);
-        vm.expectRevert(ERC721.nonExistentToken.selector);
+        vm.expectRevert(ERC721.NonExistentToken.selector);
         erc721a.ownerOf(1);
 
         erc721a.mint(alice, amount);
@@ -113,10 +113,10 @@ contract TestERC721A is BaseTest {
         vm.startPrank(alice);
 
         // doesn't exist
-        vm.expectRevert(ERC721.nonExistentToken.selector);
+        vm.expectRevert(ERC721.NonExistentToken.selector);
         erc721a.transferFrom(alice, bob, 0);
         // not minted yet
-        vm.expectRevert(ERC721.nonExistentToken.selector);
+        vm.expectRevert(ERC721.NonExistentToken.selector);
         erc721a.transferFrom(alice, bob, 1);
 
         // mint id 1,2 to alice
@@ -124,9 +124,9 @@ contract TestERC721A is BaseTest {
         // not owner of ids
         vm.stopPrank();
         vm.startPrank(bob);
-        vm.expectRevert(ERC721A.wrongFrom.selector);
+        vm.expectRevert(ERC721A.WrongFrom.selector);
         erc721a.transferFrom(bob, alice, 1);
-        vm.expectRevert(ERC721A.wrongFrom.selector);
+        vm.expectRevert(ERC721A.WrongFrom.selector);
         erc721a.transferFrom(bob, alice, 2);
         vm.stopPrank();
 
@@ -142,7 +142,7 @@ contract TestERC721A is BaseTest {
         assertEq(owner2, alice);
 
         // xfr to address(0)
-        vm.expectRevert(ERC721A.invalidRecipient.selector);
+        vm.expectRevert(ERC721A.InvalidRecipient.selector);
         erc721a.transferFrom(alice, address(0), 1);
 
         // transfer id 1 to bob
@@ -202,7 +202,7 @@ contract TestERC721A is BaseTest {
 
         vm.startPrank(alice);
         // fail to transfer id 1 as not approved for it
-        vm.expectRevert(ERC721.notAuthorized.selector);
+        vm.expectRevert(ERC721.NotAuthorized.selector);
         erc721a.transferFrom(bob, alice, 1);
 
         // transfer id 2 using alice from bob to alice
@@ -256,7 +256,7 @@ contract TestERC721A is BaseTest {
 
         // now fails with the other token because not approved anymore
         vm.startPrank(alice);
-        vm.expectRevert(ERC721.notAuthorized.selector);
+        vm.expectRevert(ERC721.NotAuthorized.selector);
         erc721a.transferFrom(bob, alice, 2);
     }
 

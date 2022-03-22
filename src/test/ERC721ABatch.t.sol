@@ -7,7 +7,7 @@ import { MockERC721Batch } from "./utils/mocks/MockERC721Batch.sol";
 contract TestERC721ABatch is BaseTest {
     MockERC721Batch private erc721aBatch;
 
-    function setUp() public {
+    function setUp() public virtual {
         erc721aBatch = new MockERC721Batch();
 
         vm.label(address(erc721aBatch), "ERC721ABatch");

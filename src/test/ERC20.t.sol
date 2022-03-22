@@ -12,7 +12,7 @@ contract TestERC20 is BaseTest {
             "Permit(address owner,address spender,uint256 value,uint256 nonce,uint256 deadline)"
         );
 
-    function setUp() public {
+    function setUp() public virtual {
         token = new MockERC20();
         vm.label(address(token), "ERC20");
         vm.label(address(this), "TestERC20");

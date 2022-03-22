@@ -11,7 +11,7 @@ contract TestERC721ATradable is BaseTest {
     MockProxyRegistry private proxyRegistry;
     MockTransferManagerERC721 private transferManagerERC721;
 
-    function setUp() public {
+    function setUp() public virtual {
         proxyRegistry = new MockProxyRegistry();
         transferManagerERC721 = new MockTransferManagerERC721();
         erc721aTradable = new MockERC721Tradable(
