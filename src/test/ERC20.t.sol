@@ -18,6 +18,12 @@ contract TestERC20 is BaseTest {
         vm.label(address(this), "TestERC20");
     }
 
+    function invariant_metadata() public {
+        assertEq(token.name(), "TestName");
+        assertEq(token.symbol(), "TestSymbol");
+        assertEq(token.decimals(), 18);
+    }
+
     function test_mint() public {
         token.mint(alice, 1e18);
 
