@@ -8,7 +8,7 @@ contract TestERC721B is BaseTest {
     MockERC721B internal erc721b;
 
     function setUp() public virtual {
-        erc721b = new MockERC721B("testname", "testsymbol", "https://example.com/12345/");
+        erc721b = new MockERC721B();
         vm.label(address(erc721b), "ERC721B");
         vm.label(address(this), "TestERC721B");
     }
@@ -16,9 +16,9 @@ contract TestERC721B is BaseTest {
     function test_mint() public {
         uint256 amount = 5;
 
-        vm.expectRevert(ERC721B.invalidRecipient.selector);
+        vm.expectRevert(ERC721B.InvalidRecipient.selector);
         erc721b.mint(address(0), amount);
-        vm.expectRevert(ERC721B.invalidAmount.selector);
+        vm.expectRevert(ERC721B.InvalidAmount.selector);
         erc721b.mint(alice, 0);
 
         erc721b.mint(alice, amount);
@@ -62,7 +62,7 @@ contract TestERC721B is BaseTest {
         uint256 startId = 1;
         uint256 amount = 5;
 
-        vm.expectRevert(ERC721B.invalidIndex.selector);
+        vm.expectRevert(ERC721B.InvalidIndex.selector);
         erc721b.tokenOfOwnerByIndex(alice, 0);
 
         erc721b.mint(alice, amount);
@@ -75,7 +75,7 @@ contract TestERC721B is BaseTest {
         uint256 startIndex = 1;
         uint256 amount = 1;
 
-        vm.expectRevert(ERC721B.invalidIndex.selector);
+        vm.expectRevert(ERC721B.InvalidIndex.selector);
         erc721b.tokenByIndex(startIndex);
 
         erc721b.mint(alice, amount);
@@ -86,7 +86,7 @@ contract TestERC721B is BaseTest {
         // uint256 startId = 1;
         uint256 amount = 5;
 
-        vm.expectRevert(ERC721B.invalidOwner.selector);
+        vm.expectRevert(ERC721B.InvalidOwner.selector);
         erc721b.balanceOf(address(0));
 
         assertEq(erc721b.balanceOf(alice), 0);
@@ -124,9 +124,9 @@ contract TestERC721B is BaseTest {
         // not owner of ids
         vm.stopPrank();
         vm.startPrank(bob);
-        vm.expectRevert(ERC721B.wrongFrom.selector);
+        vm.expectRevert(ERC721B.WrongFrom.selector);
         erc721b.transferFrom(bob, alice, 1);
-        vm.expectRevert(ERC721B.wrongFrom.selector);
+        vm.expectRevert(ERC721B.WrongFrom.selector);
         erc721b.transferFrom(bob, alice, 2);
         vm.stopPrank();
 
@@ -142,7 +142,7 @@ contract TestERC721B is BaseTest {
         assertEq(owner2, alice);
 
         // xfr to address(0)
-        vm.expectRevert(ERC721B.invalidRecipient.selector);
+        vm.expectRevert(ERC721B.InvalidRecipient.selector);
         erc721b.transferFrom(alice, address(0), 1);
 
         // transfer id 1 to bob
@@ -262,7 +262,7 @@ contract TestERC721B is BaseTest {
 
     function testGas_deploy() public {
         unchecked {
-            new MockERC721B("abcdefg", "xyz", "https://example.com/12345/");
+            new MockERC721B();
         }
     }
 

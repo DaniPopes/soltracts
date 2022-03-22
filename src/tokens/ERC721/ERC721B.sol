@@ -16,22 +16,19 @@ abstract contract ERC721B is ERC721 {
     /* -------------------------------------------------------------------------- */
 
     /// @dev Thrown when queried index is out of bounds.
-    error invalidIndex();
+    error InvalidIndex();
 
     /// @dev Thrown when queried owner is address(0).
-    error invalidOwner();
+    error InvalidOwner();
 
     /// @dev Thrown when transfer or mint recipient is address(0).
-    error invalidRecipient();
+    error InvalidRecipient();
 
     /// @dev Thrown when mint amount is 0.
-    error invalidAmount();
+    error InvalidAmount();
 
     /// @dev Thrown when `from` transfer parameter is address(0).
-    error wrongFrom();
-
-    /// @dev Thrown when couldn't find queried token. Should never happen.
-    error notFound();
+    error WrongFrom();
 
     /* -------------------------------------------------------------------------- */
     /*                               ERC721B STORAGE                              */
@@ -71,7 +68,7 @@ abstract contract ERC721B is ERC721 {
         override
         returns (uint256)
     {
-        if (index >= balanceOf(owner)) revert invalidIndex();
+        if (index >= balanceOf(owner)) revert InvalidIndex();
 
         uint256 count;
         uint256 length = _owners.length;
@@ -87,7 +84,7 @@ abstract contract ERC721B is ERC721 {
 
     /// @inheritdoc ERC721
     function tokenByIndex(uint256 index) public view virtual override returns (uint256) {
-        if (!_exists(index)) revert invalidIndex();
+        if (!_exists(index)) revert InvalidIndex();
         return index;
     }
 
@@ -100,7 +97,7 @@ abstract contract ERC721B is ERC721 {
     /// as it can become quite expensive -- call this function off chain instead.
     /// @inheritdoc ERC721
     function balanceOf(address owner) public view virtual override returns (uint256) {
-        if (owner == address(0)) revert invalidOwner();
+        if (owner == address(0)) revert InvalidOwner();
 
         uint256 count;
         uint256 length = _owners.length;
@@ -140,8 +137,8 @@ abstract contract ERC721B is ERC721 {
     /// @param amount Amount of tokens to mint.
     /// @inheritdoc ERC721
     function _mint(address to, uint256 amount) internal virtual override {
-        if (to == address(0)) revert invalidRecipient();
-        if (amount == 0) revert invalidAmount();
+        if (to == address(0)) revert InvalidRecipient();
+        if (amount == 0) revert InvalidAmount();
 
         // Counter or mint amount overflow is incredibly unrealistic.
         unchecked {
@@ -220,8 +217,8 @@ abstract contract ERC721B is ERC721 {
         address to,
         uint256 id
     ) internal virtual override {
-        if (from != ownerOf(id)) revert wrongFrom();
-        if (to == address(0)) revert invalidRecipient();
+        if (from != ownerOf(id)) revert WrongFrom();
+        if (to == address(0)) revert InvalidRecipient();
         if (
             !isApprovedForAll(from, msg.sender) &&
             msg.sender != from &&
