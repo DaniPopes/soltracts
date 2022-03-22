@@ -18,16 +18,16 @@ abstract contract ERC721A is ERC721 {
     /* -------------------------------------------------------------------------- */
 
     /// @dev Thrown when queried index is out of bounds.
-    error invalidIndex();
+    error InvalidIndex();
 
     /// @dev Thrown when queried owner is address(0).
-    error invalidOwner();
+    error InvalidOwner();
 
     /// @dev Thrown when transfer or mint recipient is address(0).
-    error invalidRecipient();
+    error InvalidRecipient();
 
     /// @dev Thrown when mint amount is 0.
-    error invalidAmount();
+    error InvalidAmount();
 
     /// @dev Thrown when `from` transfer parameter is address(0).
     error wrongFrom();
@@ -92,7 +92,7 @@ abstract contract ERC721A is ERC721 {
         override
         returns (uint256)
     {
-        if (index >= balanceOf(owner)) revert invalidIndex();
+        if (index >= balanceOf(owner)) revert InvalidIndex();
 
         uint256 minted = currentIndex;
         uint256 ownerIndex;
@@ -117,7 +117,7 @@ abstract contract ERC721A is ERC721 {
 
     /// @inheritdoc ERC721
     function tokenByIndex(uint256 index) public view virtual override returns (uint256) {
-        if (!_exists(index)) revert invalidIndex();
+        if (!_exists(index)) revert InvalidIndex();
         return index;
     }
 
@@ -127,7 +127,7 @@ abstract contract ERC721A is ERC721 {
 
     /// @inheritdoc ERC721
     function balanceOf(address owner) public view virtual override returns (uint256) {
-        if (owner == address(0)) revert invalidOwner();
+        if (owner == address(0)) revert InvalidOwner();
         return uint256(_addressData[owner].balance);
     }
 
@@ -148,8 +148,8 @@ abstract contract ERC721A is ERC721 {
     /// @param amount Amount of tokens to mint.
     /// @inheritdoc ERC721
     function _mint(address to, uint256 amount) internal virtual override {
-        if (to == address(0)) revert invalidRecipient();
-        if (amount == 0) revert invalidAmount();
+        if (to == address(0)) revert InvalidRecipient();
+        if (amount == 0) revert InvalidAmount();
 
         // Counter or mint amount overflow is incredibly unrealistic.
         unchecked {
@@ -185,7 +185,7 @@ abstract contract ERC721A is ERC721 {
                     if (
                         ERC721TokenReceiver(to).onERC721Received(msg.sender, address(0), i, "") !=
                         ERC721TokenReceiver.onERC721Received.selector
-                    ) revert unsafeRecipient();
+                    ) revert UnsafeRecipient();
             }
         }
     }
@@ -213,7 +213,7 @@ abstract contract ERC721A is ERC721 {
                     if (
                         ERC721TokenReceiver(to).onERC721Received(msg.sender, address(0), i, data) !=
                         ERC721TokenReceiver.onERC721Received.selector
-                    ) revert unsafeRecipient();
+                    ) revert UnsafeRecipient();
             }
         }
     }
@@ -234,12 +234,12 @@ abstract contract ERC721A is ERC721 {
         address owner = prevOwnership.owner;
 
         if (from != owner) revert wrongFrom();
-        if (to == address(0)) revert invalidRecipient();
+        if (to == address(0)) revert InvalidRecipient();
         if (
             !isApprovedForAll(owner, msg.sender) &&
             msg.sender != owner &&
             msg.sender != getApproved(id)
-        ) revert notAuthorized();
+        ) revert NotAuthorized();
 
         // Clear approvals
         delete _tokenApprovals[id];
@@ -267,7 +267,7 @@ abstract contract ERC721A is ERC721 {
     /// @param owner Address to query.
     /// @return Number of tokens minted by `owner`.
     function _numberMinted(address owner) public view virtual returns (uint256) {
-        if (owner == address(0)) revert invalidOwner();
+        if (owner == address(0)) revert InvalidOwner();
         return uint256(_addressData[owner].numberMinted);
     }
 
@@ -275,7 +275,7 @@ abstract contract ERC721A is ERC721 {
     /// @param id Token ID to query.
     /// @return {TokenOwnership} of `id`.
     function _ownershipOf(uint256 id) internal view virtual returns (TokenOwnership memory) {
-        if (!_exists(id)) revert nonExistentToken();
+        if (!_exists(id)) revert NonExistentToken();
 
         unchecked {
             for (uint256 curr = id; curr > 0; curr--) {

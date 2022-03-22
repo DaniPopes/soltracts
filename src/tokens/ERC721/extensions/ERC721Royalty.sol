@@ -12,10 +12,10 @@ abstract contract ERC721Royalty is ERC721 {
     /* -------------------------------------------------------------------------- */
 
     /// @dev Thrown when trying to set the royalty receiver to address(0).
-    error invalidReceiver();
+    error InvalidReceiver();
 
     /// @dev Thrown when trying to set the royalty fraction to a number greater than {_feeDenominator}.
-    error invalidRoyaltyFraction();
+    error InvalidRoyaltyFraction();
 
     /* -------------------------------------------------------------------------- */
     /*                            ERC721Royalty STORAGE                           */
@@ -56,8 +56,8 @@ abstract contract ERC721Royalty is ERC721 {
     /// - `receiver` cannot be the zero address.
     /// - `royaltyFraction` cannot be greater than the fee denominator.
     function _setRoyalty(address receiver, uint96 royaltyFraction) internal virtual {
-        if (receiver == address(0)) revert invalidReceiver();
-        if (royaltyFraction > _feeDenominator()) revert invalidRoyaltyFraction();
+        if (receiver == address(0)) revert InvalidReceiver();
+        if (royaltyFraction > _feeDenominator()) revert InvalidRoyaltyFraction();
 
         _royaltyInfo.receiver = receiver;
         _royaltyInfo.royaltyFraction = royaltyFraction;

@@ -16,13 +16,13 @@ abstract contract ERC721 {
     /* -------------------------------------------------------------------------- */
 
     /// @dev Thrown when the queried token ID does not exist.
-    error nonExistentToken();
+    error NonExistentToken();
 
     /// @dev Thrown when the caller is not the owner or it is not authorized to manage a token.
-    error notAuthorized();
+    error NotAuthorized();
 
     /// @dev Thrown when recipient of a "`safe`" function is not a contract or does not return the correct data.
-    error unsafeRecipient();
+    error UnsafeRecipient();
 
     /* -------------------------------------------------------------------------- */
     /*                                   EVENTS                                   */
@@ -141,7 +141,7 @@ abstract contract ERC721 {
     /// @param id Token ID to query.
     /// @return The account approved for `id` token.
     function getApproved(uint256 id) public view virtual returns (address) {
-        if (!_exists(id)) revert nonExistentToken();
+        if (!_exists(id)) revert NonExistentToken();
         return _tokenApprovals[id];
     }
 
@@ -165,7 +165,7 @@ abstract contract ERC721 {
     function approve(address spender, uint256 id) public virtual {
         address owner = ownerOf(id);
 
-        if (!isApprovedForAll(owner, msg.sender) && msg.sender != owner) revert notAuthorized();
+        if (!isApprovedForAll(owner, msg.sender) && msg.sender != owner) revert NotAuthorized();
 
         _tokenApprovals[id] = spender;
 
@@ -222,7 +222,7 @@ abstract contract ERC721 {
             to.code.length != 0 &&
             ERC721TokenReceiver(to).onERC721Received(msg.sender, from, id, "") !=
             ERC721TokenReceiver.onERC721Received.selector
-        ) revert unsafeRecipient();
+        ) revert UnsafeRecipient();
     }
 
     /// @notice Safely transfers `id` token from `from` to `to`.
@@ -249,7 +249,7 @@ abstract contract ERC721 {
             to.code.length != 0 &&
             ERC721TokenReceiver(to).onERC721Received(msg.sender, from, id, data) !=
             ERC721TokenReceiver.onERC721Received.selector
-        ) revert unsafeRecipient();
+        ) revert UnsafeRecipient();
     }
 
     /// @notice Returns the number of tokens in an account.
@@ -312,7 +312,7 @@ abstract contract ERC721 {
             to.code.length != 0 &&
             ERC721TokenReceiver(to).onERC721Received(address(0), to, id, "") !=
             ERC721TokenReceiver.onERC721Received.selector
-        ) revert unsafeRecipient();
+        ) revert UnsafeRecipient();
     }
 
     /// @dev Safely mints `id` token and transfers it to `to`.
@@ -337,7 +337,7 @@ abstract contract ERC721 {
             to.code.length != 0 &&
             ERC721TokenReceiver(to).onERC721Received(address(0), to, id, data) !=
             ERC721TokenReceiver.onERC721Received.selector
-        ) revert unsafeRecipient();
+        ) revert UnsafeRecipient();
     }
 
     /* -------------------------------------------------------------------------- */
