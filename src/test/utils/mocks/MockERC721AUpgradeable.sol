@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.4;
 
-import "../../../upgradable/tokens/ERC721/ERC721AUpgradeable.sol";
+import "../../../upgradeable/tokens/ERC721/ERC721AUpgradeable.sol";
 import "@openzeppelin/contracts/proxy/transparent/TransparentUpgradeableProxy.sol";
 
 contract MockERC721AUpgradeable is ERC721AUpgradeable {

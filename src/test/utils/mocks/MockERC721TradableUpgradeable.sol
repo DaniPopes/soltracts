@@ -2,7 +2,7 @@
 pragma solidity ^0.8.4;
 
 import "./MockERC721AUpgradeable.sol";
-import "../../../upgradable/tokens/ERC721/extensions/ERC721TradableUpgradeable.sol";
+import "../../../upgradeable/tokens/ERC721/extensions/ERC721TradableUpgradeable.sol";
 import "@openzeppelin/contracts/proxy/transparent/TransparentUpgradeableProxy.sol";
 
 contract MockERC721TradableUpgradeable is MockERC721AUpgradeable, ERC721TradableUpgradeable {
