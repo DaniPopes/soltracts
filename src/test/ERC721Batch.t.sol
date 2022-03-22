@@ -4,14 +4,14 @@ pragma solidity ^0.8.4;
 import "./utils/BaseTest.sol";
 import { MockERC721Batch } from "./utils/mocks/MockERC721Batch.sol";
 
-contract TestERC721ABatch is BaseTest {
+contract TestERC721Batch is BaseTest {
     MockERC721Batch private erc721aBatch;
 
     function setUp() public virtual {
         erc721aBatch = new MockERC721Batch();
 
         vm.label(address(erc721aBatch), "ERC721ABatch");
-        vm.label(address(this), "TestERC721ABatch");
+        vm.label(address(this), "TestERC721Batch");
     }
 
     uint256 internal constant amount = 50;

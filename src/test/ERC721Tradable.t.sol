@@ -6,10 +6,10 @@ import { MockProxyRegistry } from "./utils/mocks/MockProxyRegistry.sol";
 import { MockERC721Tradable } from "./utils/mocks/MockERC721Tradable.sol";
 import { MockTransferManagerERC721 } from "./utils/mocks/MockTransferManagerERC721.sol";
 
-contract TestERC721ATradable is BaseTest {
-    MockERC721Tradable private erc721aTradable;
-    MockProxyRegistry private proxyRegistry;
-    MockTransferManagerERC721 private transferManagerERC721;
+contract TestERC721Tradable is BaseTest {
+    MockERC721Tradable internal erc721aTradable;
+    MockProxyRegistry internal proxyRegistry;
+    MockTransferManagerERC721 internal transferManagerERC721;
 
     function setUp() public virtual {
         proxyRegistry = new MockProxyRegistry();
@@ -22,7 +22,7 @@ contract TestERC721ATradable is BaseTest {
         vm.label(address(proxyRegistry), "OpenSea Proxy Registry");
         vm.label(address(transferManagerERC721), "LooksRare Transfer Manager (ERC721)");
         vm.label(address(erc721aTradable), "ERC721ATradable");
-        vm.label(address(this), "TestERC721ATradable");
+        vm.label(address(this), "TestERC721Tradable");
     }
 
     function test_marketplaceApprovalForAll() public {
