@@ -1,11 +1,13 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.4;
 
+import { Initializable } from "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
+
 /// @notice Modern and gas efficient ERC20 + EIP-2612 implementation.
 /// @author DaniPopes (https://github.com/danipopes/soltracts/)
 /// @author Modified from Solmate (https://github.com/Rari-Capital/solmate/blob/main/src/tokens/ERC20.sol)
 /// @dev Do not manually set balances without updating totalSupply, as the sum of all user balances must not exceed it.
-abstract contract ERC20Upgradeable {
+abstract contract ERC20Upgradeable is Initializable {
     /* -------------------------------------------------------------------------- */
     /*                                   ERRORS                                   */
     /* -------------------------------------------------------------------------- */
@@ -79,7 +81,7 @@ abstract contract ERC20Upgradeable {
         string memory _name,
         string memory _symbol,
         uint8 _decimals
-    ) internal {
+    ) internal onlyInitializing {
         name = _name;
         symbol = _symbol;
         decimals = _decimals;
