@@ -6,7 +6,7 @@ import "../../../tokens/ERC721/ERC721A.sol";
 import "../../../tokens/ERC721/extensions/ERC721Royalty.sol";
 
 contract MockERC721Royalty is MockERC721A, ERC721Royalty {
-    function setRoyalty(address receiver, uint256 royaltyFraction) external {
+    function setRoyalty(address receiver, uint96 royaltyFraction) external {
         _setRoyalty(receiver, royaltyFraction);
     }
 
