@@ -1,20 +1,12 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.4;
 
-import "@openzeppelin/contracts/access/Ownable.sol";
-import "@rari-capital/solmate/src/utils/ReentrancyGuard.sol";
 import "../../../tokens/ERC721/ERC721B.sol";
 
-contract MockERC721B is ERC721B, Ownable, ReentrancyGuard {
-    constructor(
-        string memory _name,
-        string memory _symbol,
-        string memory _baseURI
-    ) payable ERC721B(_name, _symbol) {
-        baseURI = _baseURI;
-    }
-
+contract MockERC721B is ERC721B {
     string public baseURI;
+
+    constructor() payable ERC721B("TestName", "TestSymbol") {}
 
     function setBaseURI(string calldata _baseURI) external {
         baseURI = _baseURI;
@@ -29,11 +21,11 @@ contract MockERC721B is ERC721B, Ownable, ReentrancyGuard {
         return _exists(tokenId);
     }
 
-    function mint(address to, uint256 quantity) public payable {
-        _mint(to, quantity);
+    function mint(address to, uint256 amount) public payable {
+        _mint(to, amount);
     }
 
-    function safeMint(address to, uint256 quantity) public payable {
-        _safeMint(to, quantity);
+    function safeMint(address to, uint256 amount) public payable {
+        _safeMint(to, amount);
     }
 }
