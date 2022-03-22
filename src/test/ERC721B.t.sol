@@ -98,9 +98,9 @@ contract TestERC721B is BaseTest {
         uint256 startId = 1;
         uint256 amount = 5;
 
-        vm.expectRevert(ERC721.nonExistentToken.selector);
+        vm.expectRevert(ERC721.NonExistentToken.selector);
         erc721b.ownerOf(0);
-        vm.expectRevert(ERC721.nonExistentToken.selector);
+        vm.expectRevert(ERC721.NonExistentToken.selector);
         erc721b.ownerOf(1);
 
         erc721b.mint(alice, amount);
@@ -113,10 +113,10 @@ contract TestERC721B is BaseTest {
         vm.startPrank(alice);
 
         // doesn't exist
-        vm.expectRevert(ERC721.nonExistentToken.selector);
+        vm.expectRevert(ERC721.NonExistentToken.selector);
         erc721b.transferFrom(alice, bob, 0);
         // not minted yet
-        vm.expectRevert(ERC721.nonExistentToken.selector);
+        vm.expectRevert(ERC721.NonExistentToken.selector);
         erc721b.transferFrom(alice, bob, 1);
 
         // mint id 1,2 to alice
@@ -202,7 +202,7 @@ contract TestERC721B is BaseTest {
 
         vm.startPrank(alice);
         // fail to transfer id 1 as not approved for it
-        vm.expectRevert(ERC721.notAuthorized.selector);
+        vm.expectRevert(ERC721.NotAuthorized.selector);
         erc721b.transferFrom(bob, alice, 1);
 
         // transfer id 2 using alice from bob to alice
@@ -256,7 +256,7 @@ contract TestERC721B is BaseTest {
 
         // now fails with the other token because not approved anymore
         vm.startPrank(alice);
-        vm.expectRevert(ERC721.notAuthorized.selector);
+        vm.expectRevert(ERC721.NotAuthorized.selector);
         erc721b.transferFrom(bob, alice, 2);
     }
 

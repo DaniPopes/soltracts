@@ -116,7 +116,7 @@ abstract contract ERC721B is ERC721 {
 
     /// @inheritdoc ERC721
     function ownerOf(uint256 id) public view virtual override returns (address) {
-        if (!_exists(id)) revert nonExistentToken();
+        if (!_exists(id)) revert NonExistentToken();
 
         for (uint256 i = id; ; i++) {
             address _owner = _owners[i];
@@ -176,7 +176,7 @@ abstract contract ERC721B is ERC721 {
                     if (
                         ERC721TokenReceiver(to).onERC721Received(msg.sender, address(0), i, "") !=
                         ERC721TokenReceiver.onERC721Received.selector
-                    ) revert unsafeRecipient();
+                    ) revert UnsafeRecipient();
             }
         }
     }
@@ -204,7 +204,7 @@ abstract contract ERC721B is ERC721 {
                     if (
                         ERC721TokenReceiver(to).onERC721Received(msg.sender, address(0), i, data) !=
                         ERC721TokenReceiver.onERC721Received.selector
-                    ) revert unsafeRecipient();
+                    ) revert UnsafeRecipient();
             }
         }
     }
@@ -226,7 +226,7 @@ abstract contract ERC721B is ERC721 {
             !isApprovedForAll(from, msg.sender) &&
             msg.sender != from &&
             msg.sender != getApproved(id)
-        ) revert notAuthorized();
+        ) revert NotAuthorized();
 
         // Clear approvals
         delete _tokenApprovals[id];
