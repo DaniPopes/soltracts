@@ -49,10 +49,13 @@ abstract contract ERC721TradableUpgradeable is ERC721Upgradeable {
     /// - ETHEREUM MAINNET: 0xf42aa99F011A1fA7CDA90E5E98b277E306BcA83e
     /// - ETHEREUM RINKEBY: 0x3f65A762F15D01809cDC6B43d8849fF24949c86a
     /// @param _openSeaProxyRegistry The OpenSea proxy registry address.
-    function __ERC721Tradable_init(address _openSeaProxyRegistry, address _looksRareTransferManager)
-        internal
-        onlyInitializing
-    {
+    function __ERC721Tradable_init(
+        string memory name_,
+        string memory symbol_,
+        address _openSeaProxyRegistry,
+        address _looksRareTransferManager
+    ) internal onlyInitializing {
+        __ERC721_init(name_, symbol_);
         openSeaProxyRegistry = _openSeaProxyRegistry;
         looksRareTransferManager = _looksRareTransferManager;
         marketplaceApprovalForAll = true;
