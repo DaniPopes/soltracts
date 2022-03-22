@@ -30,10 +30,10 @@ abstract contract ERC721A is ERC721 {
     error InvalidAmount();
 
     /// @dev Thrown when `from` transfer parameter is address(0).
-    error wrongFrom();
+    error WrongFrom();
 
-    /// @dev Thrown when couldn't find queried token. Should never happen.
-    error notFound();
+    /// @dev Thrown when couldn't find queried token.
+    error NotFound();
 
     /* -------------------------------------------------------------------------- */
     /*                               ERC721A STORAGE                              */
@@ -233,7 +233,7 @@ abstract contract ERC721A is ERC721 {
         TokenOwnership memory prevOwnership = _ownershipOf(id);
         address owner = prevOwnership.owner;
 
-        if (from != owner) revert wrongFrom();
+        if (from != owner) revert WrongFrom();
         if (to == address(0)) revert InvalidRecipient();
         if (
             !isApprovedForAll(owner, msg.sender) &&
@@ -286,7 +286,7 @@ abstract contract ERC721A is ERC721 {
             }
         }
 
-        revert notFound();
+        revert NotFound();
     }
 
     /// @dev Returns all token IDs owned by an address.
