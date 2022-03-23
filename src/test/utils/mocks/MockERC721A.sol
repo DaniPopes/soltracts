@@ -37,6 +37,14 @@ contract MockERC721A is ERC721, ERC721A, Ownable, ReentrancyGuard {
         _safeMint(to, amount);
     }
 
+    function safeMint(
+        address to,
+        uint256 amount,
+        bytes calldata data
+    ) public payable nonReentrant {
+        ERC721A._safeMint(to, amount, data);
+    }
+
     function _mint(address to, uint256 amount) internal virtual override(ERC721, ERC721A) {
         ERC721A._mint(to, amount);
     }

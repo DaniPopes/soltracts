@@ -35,4 +35,12 @@ contract MockERC721AUpgradeable is ERC721AUpgradeable {
     function safeMint(address to, uint256 amount) public payable {
         _safeMint(to, amount);
     }
+
+    function safeMint(
+        address to,
+        uint256 amount,
+        bytes calldata data
+    ) public payable {
+        ERC721AUpgradeable._safeMint(to, amount, data);
+    }
 }
