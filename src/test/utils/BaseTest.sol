@@ -50,6 +50,10 @@ abstract contract BaseTest is DSTestPlus, stdCheats {
         return uint256(keccak256(abi.encodePacked(salt)));
     }
 
+    function getSelector(string memory sig) internal virtual returns (bytes memory) {
+        return abi.encodePacked(bytes4(keccak256(abi.encodePacked(sig))));
+    }
+
     function onERC721Received(
         address,
         address,
