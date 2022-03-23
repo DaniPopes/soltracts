@@ -94,4 +94,4 @@ jobs:
           version: nightly
 
       - name: Run tests
-        run: make test
+        run: yarn test
