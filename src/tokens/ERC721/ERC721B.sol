@@ -3,10 +3,10 @@ pragma solidity ^0.8.4;
 
 import { ERC721, ERC721TokenReceiver } from "./ERC721.sol";
 
+/// @notice Updated, minimalist and gas efficient version of OpenZeppelins ERC721 contract.
 /// @author DaniPopes (https://github.com/danipopes/soltracts/)
-/// @notice Refactored from beskay/ERC721B (https://github.com/beskay/ERC721B).
+/// @author Modified from beskay (https://github.com/beskay/ERC721B).
 /// @dev Includes better NATSPEC, shorter error strings, further gas optimizations.
-/// Updated, minimalist and gas efficient version of OpenZeppelins ERC721 contract.
 /// Includes the Metadata and Enumerable extension.
 /// Assumes serials are sequentially minted starting at 0 (e.g. 0, 1, 2, 3..).
 /// Does not support burning tokens to address(0).

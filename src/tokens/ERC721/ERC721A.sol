@@ -3,9 +3,9 @@ pragma solidity ^0.8.4;
 
 import { ERC721, ERC721TokenReceiver } from "./ERC721.sol";
 
-/// @author DaniPopes (https://github.com/danipopes/soltracts/)
 /// @notice Implementation of the [ERC721](https://eips.ethereum.org/EIPS/eip-721) Non-Fungible Token Standard,
 /// including the Metadata and Enumerable extension. Built to optimize for lowest gas possible during mints.
+/// @author DaniPopes (https://github.com/danipopes/soltracts/)
 /// @dev Mix of ERC721 implementations by openzeppelin/openzeppelin-contracts, rari-capital/solmate
 /// and chiru-labs/ERC721A with many additional optimizations.
 /// Assumes serials are sequentially minted starting at 1 (e.g. 1, 2, 3, 4...).
