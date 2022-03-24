@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.4;
 
-import { Initializable } from "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
+import { Initializable } from "../../proxy/utils/Initializable.sol";
 
 /// @notice Modern and gas efficient ERC20 + EIP-2612 implementation.
 /// @author DaniPopes (https://github.com/danipopes/soltracts/)

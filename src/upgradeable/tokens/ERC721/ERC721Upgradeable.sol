@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.4;
 
+import { Initializable } from "../../proxy/utils/Initializable.sol";
 import { ERC721TokenReceiverUpgradeable } from "./ERC721TokenReceiverUpgradeable.sol";
-import { Initializable } from "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 
 /// @author DaniPopes (https://github.com/danipopes/soltracts/)
 /// @notice Abstract implementation of the [ERC721](https://eips.ethereum.org/EIPS/eip-721) Non-Fungible Token Standard,
