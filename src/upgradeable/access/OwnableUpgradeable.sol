@@ -5,7 +5,7 @@ import "../proxy/utils/Initializable.sol";
 
 /// @notice Minimal access control contract.
 /// @author DaniPopes (https://github.com/danipopes/soltracts/)
-/// @author Modified from OpenZeppelin (https://github.com/OpenZeppelin/openzeppelin-contracts-upgradeable/blob/master/contracts/access/Ownable.sol)
+/// @author Modified from OpenZeppelin (https://github.com/OpenZeppelin/openzeppelin-contracts-upgradeable/blob/master/contracts/access/OwnableUpgradeable.sol)
 abstract contract OwnableUpgradeable is Initializable {
     /* -------------------------------------------------------------------------- */
     /*                                   ERRORS                                   */
@@ -37,8 +37,7 @@ abstract contract OwnableUpgradeable is Initializable {
     }
 
     function __Ownable_init_unchained() internal onlyInitializing {
-        owner = msg.sender;
-        emit OwnershipTransferred(address(0), msg.sender);
+        _transferOwnership(address(0), msg.sender);
     }
 
     /* -------------------------------------------------------------------------- */
