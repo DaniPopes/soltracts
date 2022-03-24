@@ -2,20 +2,16 @@
 pragma solidity ^0.8.4;
 
 import "./utils/BaseTest.sol";
-import "../access/Ownable.sol";
+import "./utils/mocks/MockOwnable.sol";
 
-contract OwnableMock is Ownable {
-    function call() external view onlyOwner {}
-}
-
-contract OwnableTest is BaseTest {
+contract TestOwnable is BaseTest {
     event OwnershipTransferred(address indexed previousOwner, address indexed newOwner);
 
-    OwnableMock internal mock;
+    MockOwnable internal mock;
 
-    function setUp() public {
+    function setUp() public virtual {
         vm.prank(alice);
-        mock = new OwnableMock();
+        mock = new MockOwnable();
     }
 
     function test_onlyOwner() public {
@@ -38,30 +34,15 @@ contract OwnableTest is BaseTest {
         assertEq(mock.owner(), bob);
     }
 
-    function testFuzz_onlyOwner(address owner) public {
-        vm.startPrank(owner);
-        mock = new OwnableMock();
-        assertEq(mock.owner(), owner);
-
-        mock.call();
-    }
-
-    function testFailFuzz_notOwner(address owner, address caller) public {
-        vm.assume(owner != caller);
-        vm.prank(owner);
-        mock = new OwnableMock();
-        assertEq(mock.owner(), owner);
-
+    function testFailFuzz_notOwner(address caller) public {
         vm.prank(caller);
         mock.call();
     }
 
-    function test_transferOwnership(address from, address to) public {
-        vm.assume(from != to);
-        vm.startPrank(from);
-        mock = new OwnableMock();
+    function testFuzz_transferOwnership(address to) public {
+        vm.prank(alice);
         vm.expectEmit(true, true, false, false);
-        emit OwnershipTransferred(from, to);
+        emit OwnershipTransferred(alice, to);
         mock.transferOwnership(to);
         assertEq(mock.owner(), to);
     }
