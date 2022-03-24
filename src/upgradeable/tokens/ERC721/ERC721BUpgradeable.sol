@@ -3,8 +3,9 @@ pragma solidity ^0.8.4;
 
 import { ERC721Upgradeable, ERC721TokenReceiverUpgradeable } from "./ERC721Upgradeable.sol";
 
+/// Updated, minimalist and gas efficient version of OpenZeppelins ERC721 contract.
 /// @author DaniPopes (https://github.com/danipopes/soltracts/)
-/// @notice Refactored from beskay/ERC721B (https://github.com/beskay/ERC721B).
+/// @author Modified from beskay (https://github.com/beskay/ERC721B).
 /// @dev Includes better NATSPEC, shorter error strings, further gas optimizations.
 /// Updated, minimalist and gas efficient version of OpenZeppelins ERC721 contract.
 /// Includes the Metadata and Enumerable extension.
