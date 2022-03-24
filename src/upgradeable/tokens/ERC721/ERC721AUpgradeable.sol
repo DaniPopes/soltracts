@@ -70,6 +70,10 @@ abstract contract ERC721AUpgradeable is ERC721Upgradeable {
     /// @param symbol_ The collection symbol.
     function __ERC721A_init(string memory name_, string memory symbol_) internal onlyInitializing {
         __ERC721_init(name_, symbol_);
+        __ERC721A_init_unchained();
+    }
+
+    function __ERC721A_init_unchained() internal onlyInitializing {
         currentIndex = 1;
     }
 

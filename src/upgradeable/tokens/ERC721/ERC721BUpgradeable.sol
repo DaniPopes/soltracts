@@ -41,9 +41,12 @@ abstract contract ERC721BUpgradeable is ERC721Upgradeable {
     /*                                 INITIALIZER                                */
     /* -------------------------------------------------------------------------- */
 
-    function __ERC721B_init(string memory name_, string memory symbol_) internal {
+    function __ERC721B_init(string memory name_, string memory symbol_) internal onlyInitializing {
         __ERC721_init(name_, symbol_);
-        // init to 1
+        __ERC721B_init_unchained();
+    }
+
+    function __ERC721B_init_unchained() internal onlyInitializing {
         _owners.push();
     }
 

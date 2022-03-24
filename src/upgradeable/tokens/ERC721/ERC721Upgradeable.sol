@@ -62,9 +62,14 @@ abstract contract ERC721Upgradeable is Initializable {
     /*                                 INITIALIZER                                */
     /* -------------------------------------------------------------------------- */
 
-    /// @param name_ The collection name.
-    /// @param symbol_ The collection symbol.
     function __ERC721_init(string memory name_, string memory symbol_) internal onlyInitializing {
+        __ERC721_init_unchained(name_, symbol_);
+    }
+
+    function __ERC721_init_unchained(string memory name_, string memory symbol_)
+        internal
+        onlyInitializing
+    {
         _name = name_;
         _symbol = symbol_;
     }

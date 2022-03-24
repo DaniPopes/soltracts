@@ -82,6 +82,14 @@ abstract contract ERC20Upgradeable is Initializable {
         string memory _symbol,
         uint8 _decimals
     ) internal onlyInitializing {
+        __ERC20_init_unchained(_name, _symbol, _decimals);
+    }
+
+    function __ERC20_init_unchained(
+        string memory _name,
+        string memory _symbol,
+        uint8 _decimals
+    ) internal onlyInitializing {
         name = _name;
         symbol = _symbol;
         decimals = _decimals;
