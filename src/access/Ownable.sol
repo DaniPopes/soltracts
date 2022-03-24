@@ -24,7 +24,15 @@ abstract contract Ownable {
     /* -------------------------------------------------------------------------- */
 
     /// @notice Returns the address of the current owner.
-    address public owner = msg.sender;
+    address public owner;
+
+    /* -------------------------------------------------------------------------- */
+    /*                                 CONSTRUCTOR                                */
+    /* -------------------------------------------------------------------------- */
+
+    constructor() {
+        transferOwnership(msg.sender);
+    }
 
     /* -------------------------------------------------------------------------- */
     /*                                Ownable LOGIC                               */
