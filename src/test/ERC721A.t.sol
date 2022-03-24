@@ -7,22 +7,12 @@ import "./utils/mocks/MockERC721A.sol";
 // import "solmate/test/ERC721.t.sol";
 /// @author Solmate (https://github.com/Rari-Capital/solmate/blob/main/src/test/ERC721.t.sol)
 contract ERC721Recipient is ERC721TokenReceiver {
-    address public operator;
-    address public from;
-    uint256 public id;
-    bytes public data;
-
     function onERC721Received(
-        address _operator,
-        address _from,
-        uint256 _id,
-        bytes calldata _data
+        address,
+        address,
+        uint256,
+        bytes calldata
     ) public virtual override returns (bytes4) {
-        operator = _operator;
-        from = _from;
-        id = _id;
-        data = _data;
-
         return ERC721TokenReceiver.onERC721Received.selector;
     }
 }
@@ -47,13 +37,13 @@ contract WrongReturnDataERC721Recipient is ERC721TokenReceiver {
         uint256,
         bytes calldata
     ) public virtual override returns (bytes4) {
-        return 0xCAFEBEEF;
+        return 0x12345678;
     }
 }
 
 /// @author Solmate (https://github.com/Rari-Capital/solmate/blob/main/src/test/ERC721.t.sol)
 contract NonERC721Recipient {
-
+    string public gm = "gm";
 }
 
 contract TestERC721A is BaseTest {
@@ -328,6 +318,7 @@ contract TestERC721A is BaseTest {
         }
 
         erc721a.safeMint(to, amount, data);
+
         assertEq(erc721a.balanceOf(to), amount);
         for (uint256 i; i < amount; i++) {
             assertEq(erc721a.ownerOf(i + 1), to);
