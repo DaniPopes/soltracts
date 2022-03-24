@@ -64,7 +64,7 @@ abstract contract ERC721RoyaltyUpgradeable is ERC721Upgradeable {
     }
 
     /// @inheritdoc ERC721Upgradeable
-    function supportsInterface(bytes4 interfaceId) public pure virtual override returns (bool) {
+    function supportsInterface(bytes4 interfaceId) public view virtual override returns (bool) {
         return
             interfaceId == 0x2a55205a || // ERC165 Interface ID for ERC2981
             super.supportsInterface(interfaceId);
