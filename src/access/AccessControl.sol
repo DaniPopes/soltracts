@@ -80,7 +80,7 @@ abstract contract AccessControl {
     function supportsInterface(bytes4 interfaceId) public view virtual returns (bool) {
         return
             interfaceId == 0x01ffc9a7 || // ERC165 Interface ID for ERC165
-            interfaceId == 0x00000000; // ERC165 Interface ID for AccessControl
+            interfaceId == 0x7965db0b; // ERC165 Interface ID for AccessControl
     }
 
     /* -------------------------------------------------------------------------- */
