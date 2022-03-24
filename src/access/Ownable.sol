@@ -31,7 +31,7 @@ abstract contract Ownable {
     /* -------------------------------------------------------------------------- */
 
     constructor() {
-        transferOwnership(msg.sender);
+        _transferOwnership(address(0), msg.sender);
     }
 
     /* -------------------------------------------------------------------------- */
@@ -44,10 +44,17 @@ abstract contract Ownable {
         _;
     }
 
-    /// @notice Transfers ownership of the contract to a new account (`newOwner`).
-    /// @param newOwner The new owner.
-    function transferOwnership(address newOwner) public virtual onlyOwner {
-        emit OwnershipTransferred(owner, newOwner);
-        owner = newOwner;
+    /// @notice Transfers ownership of the contract to a new account (`_owner`).
+    /// @param _owner The new owner.
+    function transferOwnership(address _owner) public virtual onlyOwner {
+        // onlyOwner -> msg.sender == owner
+        _transferOwnership(msg.sender, _owner);
+    }
+
+    /// @dev Internal ownership transfer with no checks.
+    /// Using `from` to save an SLOAD for emitting the event.
+    function _transferOwnership(address from, address to) private {
+        owner = to;
+        emit OwnershipTransferred(from, to);
     }
 }
