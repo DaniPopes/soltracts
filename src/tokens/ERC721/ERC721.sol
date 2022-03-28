@@ -236,7 +236,7 @@ abstract contract ERC721 {
     /// @param from The address to transfer from.
     /// @param to The address to transfer to.
     /// @param id The token ID to transfer.
-    /// @param data The calldata to pass in the {ERC721TokenReceiver-onERC721Received} callback.
+    /// @param data The data to callback with.
     function safeTransferFrom(
         address from,
         address to,
@@ -325,7 +325,7 @@ abstract contract ERC721 {
     /// Additionally passes `data` in the callback.
     /// @param to The address to mint to.
     /// @param id The token ID to mint.
-    /// @param data The calldata to pass in the {ERC721TokenReceiver.onERC721Received} callback.
+    /// @param data The data to callback with.
     function _safeMint(
         address to,
         uint256 id,

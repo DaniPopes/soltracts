@@ -53,6 +53,7 @@ abstract contract ERC721BatchUpgradeable is ERC721Upgradeable {
     /// @param from The address to transfer from.
     /// @param to The address to transfer to.
     /// @param ids The token IDs to transfer.
+    /// @param data The data to callback with.
     function batchSafeTransferFrom(
         address from,
         address to,
@@ -72,6 +73,7 @@ abstract contract ERC721BatchUpgradeable is ERC721Upgradeable {
     /// @param from The address to transfer from.
     /// @param to The addresses to transfer to.
     /// @param ids The token IDs to transfer.
+    /// @param data The data to callback with.
     function batchSafeTransferFrom(
         address from,
         address[] calldata to,
