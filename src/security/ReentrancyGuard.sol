@@ -9,7 +9,7 @@ abstract contract ReentrancyGuard {
     /*                                   ERRORS                                   */
     /* -------------------------------------------------------------------------- */
 
-    /// @dev Thrown when calling `nonReentrant` functions with a callback.
+    /// @dev Thrown when reentering `nonReentrant` functions.
     error Reentrancy();
 
     /* -------------------------------------------------------------------------- */

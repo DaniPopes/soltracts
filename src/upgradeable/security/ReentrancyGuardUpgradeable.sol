@@ -11,7 +11,7 @@ abstract contract ReentrancyGuardUpgradeable is Initializable {
     /*                                   ERRORS                                   */
     /* -------------------------------------------------------------------------- */
 
-    /// @dev Thrown when calling `nonReentrant` functions with a callback.
+    /// @dev Thrown when reentering `nonReentrant` functions.
     error Reentrancy();
 
     /* -------------------------------------------------------------------------- */
@@ -36,6 +36,11 @@ abstract contract ReentrancyGuardUpgradeable is Initializable {
     /*                            ReentrancyGuard LOGIC                           */
     /* -------------------------------------------------------------------------- */
 
+    /// @dev Prevents a contract from calling itself, directly or indirectly.
+    /// Calling a `nonReentrant` function from another `nonReentrant`
+    /// function is not supported. It is possible to prevent this from happening
+    /// by making the `nonReentrant` function external, and making it call a
+    /// `private` function that does the actual work.
     modifier nonReentrant() {
         if (locked != 1) revert Reentrancy();
 
