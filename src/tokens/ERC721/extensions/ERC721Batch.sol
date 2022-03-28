@@ -20,7 +20,7 @@ abstract contract ERC721Batch is ERC721 {
         address from,
         address to,
         uint256[] calldata ids
-    ) public virtual {
+    ) external virtual {
         unchecked {
             uint256 length = ids.length;
             for (uint256 i; i < length; i++) {
@@ -39,7 +39,7 @@ abstract contract ERC721Batch is ERC721 {
         address from,
         address[] calldata to,
         uint256[] calldata ids
-    ) public virtual {
+    ) external virtual {
         unchecked {
             uint256 length = ids.length;
             for (uint256 i; i < length; i++) {
@@ -53,12 +53,13 @@ abstract contract ERC721Batch is ERC721 {
     /// @param from The address to transfer from.
     /// @param to The address to transfer to.
     /// @param ids The token IDs to transfer.
+    /// @param data The data to callback with.
     function batchSafeTransferFrom(
         address from,
         address to,
         uint256[] calldata ids,
         bytes calldata data
-    ) public virtual {
+    ) external virtual {
         unchecked {
             uint256 length = ids.length;
             for (uint256 i; i < length; i++) {
@@ -72,12 +73,13 @@ abstract contract ERC721Batch is ERC721 {
     /// @param from The address to transfer from.
     /// @param to The addresses to transfer to.
     /// @param ids The token IDs to transfer.
+    /// @param data The data to callback with.
     function batchSafeTransferFrom(
         address from,
         address[] calldata to,
         uint256[] calldata ids,
         bytes calldata data
-    ) public virtual {
+    ) external virtual {
         unchecked {
             uint256 length = ids.length;
             for (uint256 i; i < length; i++) {
