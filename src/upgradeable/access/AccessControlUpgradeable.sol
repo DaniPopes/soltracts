@@ -43,7 +43,7 @@ abstract contract AccessControlUpgradeable is Initializable {
     /*                              IMMUTABLE STORAGE                             */
     /* -------------------------------------------------------------------------- */
 
-    bytes32 internal constant DEFAULT_ADMIN_ROLE = 0x0;
+    bytes32 public constant DEFAULT_ADMIN_ROLE = 0x0;
 
     /* -------------------------------------------------------------------------- */
     /*                               MUTABLE STORAGE                              */
@@ -70,9 +70,6 @@ abstract contract AccessControlUpgradeable is Initializable {
 
     /// @dev Modifier that checks that an account has a specific role. Reverts
     /// with a standardized message including the required role.
-    /// The format of the revert reason is given by the following regular expression:
-    ///  /^AccessControl: account (0x[0-9a-f]{40}) is missing role (0x[0-9a-f]{64})$/
-    /// _Available since v4.1._
     modifier onlyRole(bytes32 role) {
         _checkRole(role);
         _;
@@ -107,7 +104,6 @@ abstract contract AccessControlUpgradeable is Initializable {
 
     /// @dev Revert with a standard message if `msg.sender` is missing `role`.
     /// Overriding this function changes the behavior of the {onlyRole} modifier.
-    /// Format of the revert message is described in {_checkRole}.
     function _checkRole(bytes32 role) internal view virtual {
         _checkRole(role, msg.sender);
     }
