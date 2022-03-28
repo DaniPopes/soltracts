@@ -41,7 +41,7 @@ abstract contract AccessControl {
     /*                              IMMUTABLE STORAGE                             */
     /* -------------------------------------------------------------------------- */
 
-    bytes32 public constant DEFAULT_ADMIN_ROLE = 0x0;
+    bytes32 internal constant DEFAULT_ADMIN_ROLE = 0x0;
 
     /* -------------------------------------------------------------------------- */
     /*                               MUTABLE STORAGE                              */
@@ -60,9 +60,6 @@ abstract contract AccessControl {
 
     /// @dev Modifier that checks that an account has a specific role. Reverts
     /// with a standardized message including the required role.
-    /// The format of the revert reason is given by the following regular expression:
-    ///  /^AccessControl: account (0x[0-9a-f]{40}) is missing role (0x[0-9a-f]{64})$/
-    /// _Available since v4.1._
     modifier onlyRole(bytes32 role) {
         _checkRole(role);
         _;

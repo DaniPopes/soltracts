@@ -43,7 +43,7 @@ abstract contract AccessControlUpgradeable is Initializable {
     /*                              IMMUTABLE STORAGE                             */
     /* -------------------------------------------------------------------------- */
 
-    bytes32 public constant DEFAULT_ADMIN_ROLE = 0x0;
+    bytes32 internal constant DEFAULT_ADMIN_ROLE = 0x0;
 
     /* -------------------------------------------------------------------------- */
     /*                               MUTABLE STORAGE                              */
