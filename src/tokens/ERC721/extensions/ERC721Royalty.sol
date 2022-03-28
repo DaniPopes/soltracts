@@ -64,7 +64,7 @@ abstract contract ERC721Royalty is ERC721 {
     }
 
     /// @inheritdoc ERC721
-    function supportsInterface(bytes4 interfaceId) public pure virtual override returns (bool) {
+    function supportsInterface(bytes4 interfaceId) public view virtual override returns (bool) {
         return
             interfaceId == 0x2a55205a || // ERC165 Interface ID for ERC2981
             super.supportsInterface(interfaceId);
