@@ -12,7 +12,7 @@ contract MockERC721Royalty is MockERC721A, ERC721Royalty {
 
     function supportsInterface(bytes4 interfaceId)
         public
-        pure
+        view
         virtual
         override(ERC721, ERC721Royalty)
         returns (bool)
