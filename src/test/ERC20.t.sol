@@ -271,6 +271,8 @@ contract TestERC20 is BaseTest {
     }
 
     function testFuzz_transfer(address from, uint256 amount) public {
+        vm.assume(from != address(0));
+
         token.mint(address(this), amount);
 
         assertTrue(token.transfer(from, amount));
@@ -289,6 +291,8 @@ contract TestERC20 is BaseTest {
         uint256 approval,
         uint256 amount
     ) public {
+        vm.assume(to != address(0));
+
         amount = bound(amount, 0, approval);
 
         token.mint(bob, amount);
@@ -357,6 +361,8 @@ contract TestERC20 is BaseTest {
         uint256 mintAmount,
         uint256 sendAmount
     ) public {
+        vm.assume(to != address(0));
+
         sendAmount = bound(sendAmount, mintAmount + 1, type(uint256).max);
 
         token.mint(address(this), mintAmount);
@@ -368,6 +374,8 @@ contract TestERC20 is BaseTest {
         uint256 approval,
         uint256 amount
     ) public {
+        vm.assume(to != address(0));
+
         amount = bound(amount, approval + 1, type(uint256).max);
 
         token.mint(bob, amount);
@@ -381,6 +389,8 @@ contract TestERC20 is BaseTest {
         uint256 mintAmount,
         uint256 sendAmount
     ) public {
+        vm.assume(to != address(0));
+
         sendAmount = bound(sendAmount, mintAmount + 1, type(uint256).max);
 
         token.mint(bob, mintAmount);
@@ -490,5 +500,9 @@ contract TestERC20 is BaseTest {
 
         token.permit(owner, to, amount, deadline, v, r, s);
         token.permit(owner, to, amount, deadline, v, r, s);
+    }
+
+    function testGas_deploy() public virtual {
+        new MockERC20();
     }
 }

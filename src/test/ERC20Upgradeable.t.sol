@@ -22,4 +22,16 @@ contract TestERC20Upgradeable is TestERC20 {
         vm.label(address(proxy), "Proxy");
         vm.label(address(this), "TestERC20Upgradeable");
     }
+
+    function testGas_deploy() public override {
+        uint256 g = gasleft();
+        address t = address(new MockERC20Upgradeable());
+        uint256 g2 = gasleft();
+        new TransparentUpgradeableProxy(t, bob, abi.encodeWithSignature("initialize()"));
+        uint256 g3 = gasleft();
+
+        console.log("Logic gas", g - g2);
+        console.log("Proxy gas", g2 - g3);
+        console.log("Total gas", (g - g2) + (g2 - g3));
+    }
 }
