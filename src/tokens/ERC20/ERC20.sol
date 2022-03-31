@@ -10,6 +10,12 @@ abstract contract ERC20 {
     /*                                   ERRORS                                   */
     /* -------------------------------------------------------------------------- */
 
+    /// @dev Thrown when the recipient of a transfer is `address(0)`.
+    error InvalidRecipient();
+
+    /// @dev Thrown when providing an invalid `secp256k1` signature or the signer is not `owner`.
+    error InvalidSigner();
+
     /// @dev Thrown when `block.timestamp` is greater than the permit's deadline.
     error PermitDeadlineExpired();
 
@@ -67,7 +73,7 @@ abstract contract ERC20 {
 
     /// @notice Returns the current nonce for `owner`. This value must be
     /// included whenever a signature is generated for {permit}.
-    /// Every successful call to {permit} increases ``owner``'s nonce by one. This
+    /// Every successful call to {permit} increases `owner`'s nonce by one. This
     /// prevents a signature from being used multiple times.
     mapping(address => uint256) public nonces;
 
@@ -120,15 +126,7 @@ abstract contract ERC20 {
     /// @param amount The amount of tokens to transfer.
     /// @return success Whether the operation succeeded.
     function transfer(address to, uint256 amount) public virtual returns (bool) {
-        balanceOf[msg.sender] -= amount;
-
-        // Cannot overflow because the sum of all user
-        // balances can't exceed the max uint256 value.
-        unchecked {
-            balanceOf[to] += amount;
-        }
-
-        emit Transfer(msg.sender, to, amount);
+        _transfer(msg.sender, to, amount);
 
         return true;
     }
@@ -137,7 +135,7 @@ abstract contract ERC20 {
     /// allowance mechanism. `amount` is then deducted from the caller's
     /// allowance.
     /// @dev Requirements:
-    /// - `from` and `to` cannot be the zero address.
+    /// - `to` cannot be the zero address.
     /// - `from` must have a balance of at least `amount`.
     /// - the caller must have allowance for `from`'s tokens of at least
     /// `amount`.
@@ -154,15 +152,7 @@ abstract contract ERC20 {
 
         if (allowed != type(uint256).max) allowance[from][msg.sender] = allowed - amount;
 
-        balanceOf[from] -= amount;
-
-        // Cannot overflow because the sum of all user
-        // balances can't exceed the max uint256 value.
-        unchecked {
-            balanceOf[to] += amount;
-        }
-
-        emit Transfer(from, to, amount);
+        _transfer(from, to, amount);
 
         return true;
     }
@@ -171,18 +161,17 @@ abstract contract ERC20 {
     /*                               EIP-2612 LOGIC                               */
     /* -------------------------------------------------------------------------- */
 
-    /// @notice Sets `value` as the allowance of `spender` over ``owner``'s tokens,
-    /// given ``owner``'s signed approval.
+    /// @notice Sets `value` as the allowance of `spender` over `owner`'s tokens,
+    /// given `owner`'s signed approval.
     /// @dev Requirements:
-    /// - `spender` cannot be the zero address.
     /// - `deadline` must be a timestamp in the future.
     /// - `v`, `r` and `s` must be a valid `secp256k1` signature from `owner`
     /// over the EIP712-formatted function arguments.
-    /// - the signature must use ``owner``'s current nonce (see {nonces}).
+    /// - the signature must use `owner`'s current nonce (see {nonces}).
+    /// Emits an {Approval} event.
     /// For more information on the signature format, see the
     /// https://eips.ethereum.org/EIPS/eip-2612#specification[relevant EIP
     /// section].
-    /// Emits an {Approval} event.
     function permit(
         address owner,
         address spender,
@@ -221,7 +210,7 @@ abstract contract ERC20 {
                 s
             );
 
-            require(recoveredAddress != address(0) && recoveredAddress == owner, "INVALID_SIGNER");
+            if (recoveredAddress == address(0) || recoveredAddress != owner) revert InvalidSigner();
 
             allowance[recoveredAddress][spender] = value;
         }
@@ -235,6 +224,7 @@ abstract contract ERC20 {
             block.chainid == INITIAL_CHAIN_ID ? INITIAL_DOMAIN_SEPARATOR : computeDomainSeparator();
     }
 
+    /// @dev Computes the EIP712 domain separator.
     function computeDomainSeparator() internal view virtual returns (bytes32) {
         return
             keccak256(
@@ -251,8 +241,31 @@ abstract contract ERC20 {
     }
 
     /* -------------------------------------------------------------------------- */
-    /*                          INTERNAL MINT/BURN LOGIC                          */
+    /*                               INTERNAL LOGIC                               */
     /* -------------------------------------------------------------------------- */
+
+    /// @dev Requirements:
+    /// - `to` cannot be the zero address.
+    /// @param from The address to transfer from.
+    /// @param to The address to transfer to.
+    /// @param amount The amount of tokens to transfer.
+    function _transfer(
+        address from,
+        address to,
+        uint256 amount
+    ) internal virtual {
+        if (to == address(0)) revert InvalidRecipient();
+
+        balanceOf[from] -= amount;
+
+        // Cannot overflow because the sum of all user
+        // balances can't exceed the max uint256 value.
+        unchecked {
+            balanceOf[to] += amount;
+        }
+
+        emit Transfer(from, to, amount);
+    }
 
     /// @dev Creates `amount` tokens and assigns them to `to`, increasing
     /// the total supply.
